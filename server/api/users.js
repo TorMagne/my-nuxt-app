@@ -40,6 +40,15 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  if (req.method === 'GET') {
+    // get all users
+    const users = await User.find().lean(); // Use .lean() to get plain objects
+    return {
+      status: 200,
+      body: users,
+    };
+  }
+
   return {
     status: 405,
     body: { message: 'Method Not Allowed' },

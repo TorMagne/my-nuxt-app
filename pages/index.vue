@@ -168,7 +168,7 @@ const handleSetPassword = async () => {
     });
 
     console.log('Password set successfully:', data);
-    await navigateTo('/dashboard');
+    await navigateTo('/games');
   } catch (error) {
     console.error('Error setting password:', error);
     errorInfo.value = error.message;
