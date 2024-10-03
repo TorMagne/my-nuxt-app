@@ -2,6 +2,9 @@
   "name": "nuxt-app",
   "private": true,
   "type": "module",
+  "overrides": {
+    "vue": "latest"
+  },
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -11,9 +14,11 @@
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.12.1",
+    "@pinia/nuxt": "^0.5.5",
     "bcryptjs": "^2.4.3",
     "mongoose": "^8.7.0",
     "nuxt": "^3.13.0",
+    "pinia": "^2.2.4",
     "vue": "latest",
     "vue-router": "latest"
   },

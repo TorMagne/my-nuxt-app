@@ -7,5 +7,5 @@ export default defineNuxtConfig({
     MONGO_URI: process.env.MONGO_URI,
   },
 
-  modules: ['@nuxtjs/tailwindcss'],
+  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt'],
 });
