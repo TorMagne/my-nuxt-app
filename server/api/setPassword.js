@@ -1,4 +1,5 @@
 import User from '~/server/models/userModel';
+import bcrypt from 'bcryptjs';
 
 export default defineEventHandler(async (event) => {
   const { req } = event.node;
@@ -10,7 +11,9 @@ export default defineEventHandler(async (event) => {
 
       const user = await User.findOne({ userNumber });
 
-      user.password = password;
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+
       await user.save();
 
       return {

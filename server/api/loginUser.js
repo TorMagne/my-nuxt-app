@@ -1,4 +1,5 @@
 import User from '~/server/models/userModel';
+import bcrypt from 'bcryptjs';
 
 export default defineEventHandler(async (event) => {
   const { req } = event.node;
@@ -18,8 +19,8 @@ export default defineEventHandler(async (event) => {
         };
       }
 
-      // Compare the provided password with the stored password
-      const isPasswordValid = password === user.password;
+      // Compare the provided password
+      const isPasswordValid = await bcrypt.compare(password, user.password);
 
       if (!isPasswordValid) {
         return {
