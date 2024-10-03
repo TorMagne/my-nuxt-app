@@ -122,6 +122,9 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useAuthStore } from '~/stores/auth/AuthStore';
+
+const AuthStore = useAuthStore();
 
 const loginNumber = ref('');
 const password = ref('');
@@ -185,7 +188,8 @@ const handleLoginWithPassword = async () => {
       },
     });
 
-    console.log('Logged in successfully:', data);
+    console.log('Logged in successfully:', data.body.user);
+    AuthStore.setLoggedInUser(data.body.user);
     await navigateTo('/games');
   } catch (error) {
     console.error('Error logging in:', error);
