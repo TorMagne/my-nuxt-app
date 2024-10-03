@@ -58,7 +58,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 const errorInfo = ref(null);
 const currentPage = ref(1);
@@ -104,4 +104,9 @@ const nextPage = () => {
     currentPage.value++;
   }
 };
+
+// Watch the searchQuery and reset currentPage to 1 when it changes
+watch(searchQuery, () => {
+  currentPage.value = 1;
+});
 </script>
