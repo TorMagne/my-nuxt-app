@@ -39,7 +39,7 @@
           class="menu bg-base-200 text-base-content min-h-full w-80 p-4"
           v-if="AuthStore.getIsLoggedIn"
         >
-          <label class="btn btn-secondary mb-4 lg:hidden" for="my-drawer-2">Close sidenav</label>
+          <label class="btn btn-secondary mb-4 lg:hidden" for="my-drawer-2">Close navigation</label>
           <!-- Sidebar content here -->
           <li>
             <NuxtLink to="/games" activeClass="active-link">
@@ -79,6 +79,7 @@
               Users</NuxtLink
             >
           </li>
+          <button class="btn btn-secondary mt-4" @click="AuthStore.logout">Logout</button>
         </ul>
       </div>
     </div>

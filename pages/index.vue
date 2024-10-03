@@ -5,7 +5,6 @@
     v-if="needsPassword"
   >
     <form @submit.prevent="handleSetPassword">
-      <p>need password</p>
       <div class="card bg-base-200 w-full md:w-96 shadow-xl">
         <div class="card-body">
           <h2 class="card-title">Login</h2>
@@ -51,7 +50,6 @@
     v-if="needsLogin"
   >
     <form @submit.prevent="handleLoginWithPassword">
-      <p>need to login with password</p>
       <div class="card bg-base-200 w-full md:w-96 shadow-xl">
         <div class="card-body">
           <h2 class="card-title">Login</h2>
@@ -141,22 +139,42 @@ const handleLogin = async () => {
       throw: false, // Disable automatic error throwing
     });
 
-    console.log('Response success => ', data);
+    // console.log('Response success => ', data);
 
     if (data.body && data.body.needsPassword) {
       needsPassword.value = data.body.needsPassword;
       needsLogin.value = data.body.needsLogin;
+      useToastify('You need to set a password', {
+        type: 'info',
+        autoClose: 3000,
+        position: ToastifyOption.POSITION.TOP_RIGHT,
+      });
     } else if (data.body && data.body.needsLogin) {
       needsPassword.value = data.body.needsPassword;
       needsLogin.value = data.body.needsLogin;
+      useToastify('Login with your password', {
+        type: 'info',
+        autoClose: 3000,
+        position: ToastifyOption.POSITION.TOP_RIGHT,
+      });
     } else if (data.status === 404) {
-      errorInfo.value = data.body.message;
+      useToastify(data.body.message, {
+        type: 'error',
+        autoClose: 3000,
+        position: ToastifyOption.POSITION.TOP_RIGHT,
+      });
+      // errorInfo.value = data.body.message;
     } else {
       // Successful login, redirect to dashboard
       await navigateTo('/games');
     }
   } catch (error) {
     console.error('Error during login:', error);
+    useToastify('Something wrong happened', {
+      type: 'error',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
   }
 };
 
@@ -170,10 +188,10 @@ const handleSetPassword = async () => {
       },
     });
 
-    console.log('Password set successfully:', data);
+    // console.log('Password set successfully:', data);
     await navigateTo('/games');
   } catch (error) {
-    console.error('Error setting password:', error);
+    // console.error('Error setting password:', error);
     errorInfo.value = error.message;
   }
 };
@@ -188,12 +206,19 @@ const handleLoginWithPassword = async () => {
       },
     });
 
-    console.log('Logged in successfully:', data.body.user);
+    // console.log('Logged in successfully:', data.body.user);
     AuthStore.setLoggedInUser(data.body.user);
     await navigateTo('/games');
   } catch (error) {
-    console.error('Error logging in:', error);
-    errorInfo.value = error.message;
+    if (error.status === 401) {
+      useToastify('Invalid password', {
+        type: 'error',
+        autoClose: 3000,
+        position: ToastifyOption.POSITION.TOP_RIGHT,
+      });
+    }
+    // console.error('Error logging in:', error);
+    // errorInfo.value = error.message;
   }
 };
 </script>

@@ -1,5 +1,6 @@
 import User from '~/server/models/userModel';
 import bcrypt from 'bcryptjs';
+import { createError } from 'h3';
 
 export default defineEventHandler(async (event) => {
   const { req } = event.node;
@@ -13,37 +14,46 @@ export default defineEventHandler(async (event) => {
       const user = await User.findOne({ userNumber });
 
       if (!user) {
-        return {
-          status: 404,
-          body: { message: 'User not found' },
-        };
+        throw createError({
+          statusCode: 404,
+          statusMessage: 'User not found',
+        });
       }
 
       // Compare the provided password
       const isPasswordValid = await bcrypt.compare(password, user.password);
 
       if (!isPasswordValid) {
-        return {
-          status: 401,
-          body: { message: 'Invalid password' },
-        };
+        throw createError({
+          statusCode: 401,
+          statusMessage: 'Invalid password',
+        });
       }
 
       // If the password is valid, return a success response
+      const userData = user.toObject();
+      delete userData.password; // Remove sensitive fields
+
       return {
         status: 200,
-        body: { message: 'Login successful', user },
+        body: {
+          success: true,
+          message: 'Login successful',
+          user: userData,
+        },
       };
     } catch (error) {
-      return {
-        status: 500,
-        body: { message: 'Error processing login', error },
-      };
+      console.error('Error processing login:', error);
+      throw createError({
+        statusCode: error.statusCode || 500,
+        statusMessage: error.statusMessage || 'Internal Server Error',
+      });
     }
   }
 
-  return {
-    status: 405,
-    body: { message: 'Method Not Allowed' },
-  };
+  // Method not allowed
+  throw createError({
+    statusCode: 405,
+    statusMessage: 'Method Not Allowed',
+  });
 });
