@@ -150,7 +150,7 @@ const handleLogin = async () => {
       errorInfo.value = data.body.message;
     } else {
       // Successful login, redirect to dashboard
-      await navigateTo('/dashboard');
+      await navigateTo('/games');
     }
   } catch (error) {
     console.error('Error during login:', error);
@@ -186,7 +186,7 @@ const handleLoginWithPassword = async () => {
     });
 
     console.log('Logged in successfully:', data);
-    await navigateTo('/dashboard');
+    await navigateTo('/games');
   } catch (error) {
     console.error('Error logging in:', error);
     errorInfo.value = error.message;
