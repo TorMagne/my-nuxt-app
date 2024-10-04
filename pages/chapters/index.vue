@@ -13,7 +13,7 @@
               <span class="label-text">Select book</span>
             </div>
             <select class="select select-bordered" v-model="form.book" required>
-              <option disabled selected value="">Pick one</option>
+              <option disabled selected value="">Select one</option>
               <option v-for="book in books" :key="book._id" :value="book._id">
                 {{ book.name }}
               </option>
