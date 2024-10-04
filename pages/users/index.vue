@@ -36,7 +36,7 @@
               <td class="text-black">{{ user.userNumber }}</td>
               <td class="text-black">{{ user.role }}</td>
               <td>
-                <button class="btn btn-success btn-sm">Edit user</button>
+                <button class="btn btn-info btn-sm">Edit user</button>
               </td>
             </tr>
           </tbody>

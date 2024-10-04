@@ -71,7 +71,7 @@
 
         <div class="modal-action">
           <!-- Close the modal when clicking "Cancel" -->
-          <button class="btn" @click="closeModal">Cancel</button>
+          <button class="btn btn-warning" @click="closeModal">Cancel</button>
         </div>
       </div>
     </dialog>
@@ -96,7 +96,7 @@
                 <img :src="`${book.image}`" width="50" />
               </td>
               <td>
-                <button class="btn btn-success btn-sm">Edit book</button>
+                <button class="btn btn-info btn-sm">Edit book</button>
               </td>
             </tr>
           </tbody>
