@@ -105,7 +105,7 @@
               <td class="text-black">{{ chapter.level }}</td>
               <td class="text-black">{{ chapter.description }}</td>
               <td>
-                <button class="btn btn-success btn-sm">Edit Chapter</button>
+                <button class="btn btn-info btn-sm">Edit Chapter</button>
               </td>
             </tr>
           </tbody>
