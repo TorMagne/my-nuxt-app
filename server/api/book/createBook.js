@@ -1,4 +1,3 @@
-// ~/server/api/book/createBook.js
 import Book from '~/server/models/bookModel';
 import formidable from 'formidable';
 import { sendError, createError, defineEventHandler } from 'h3';
