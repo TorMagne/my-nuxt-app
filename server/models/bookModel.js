@@ -8,4 +8,4 @@ const SubjectSchema = new mongoose.Schema({
   updated_at: { type: Date, default: Date.now },
 });
 
-export default mongoose.models.Subject || mongoose.model('Subject', SubjectSchema);
+export default mongoose.models.Book || mongoose.model('Book', SubjectSchema);
