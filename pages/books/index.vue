@@ -2,11 +2,11 @@
   <section class="book-create">
     <h1 class="font-bold my-4 text-2xl">Books</h1>
 
-    <!-- Open the modal using ID.showModal() method -->
-    <button class="btn btn-success" onclick="my_modal_1.showModal()">Create book</button>
-    <dialog id="my_modal_1" class="modal">
+    <!-- Open the modal using Vue's @click directive -->
+    <button class="btn btn-success" @click="openModal">Create book</button>
+    <dialog id="my_modal_1" class="modal" ref="modal">
       <div class="modal-box">
-        <h3 class="text-lg font-bold">Hello!</h3>
+        <h3 class="text-lg font-bold">Create a New Book</h3>
         <form @submit.prevent="submitForm" enctype="multipart/form-data">
           <label class="form-control w-full max-w-xs mb-4">
             <div class="label">
@@ -24,7 +24,7 @@
 
           <label class="form-control mb-4">
             <div class="label">
-              <span class="label-text">Book description</span>
+              <span class="label-text">Book Description</span>
             </div>
             <textarea
               class="textarea textarea-bordered h-24"
@@ -54,10 +54,8 @@
         </form>
 
         <div class="modal-action">
-          <form method="dialog">
-            <!-- if there is a button in form, it will close the modal -->
-            <button class="btn">Cancel</button>
-          </form>
+          <!-- Close the modal when clicking "Cancel" -->
+          <button class="btn" @click="closeModal">Cancel</button>
         </div>
       </div>
     </dialog>
@@ -65,27 +63,36 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
 const form = ref({
   name: '',
   description: '',
 });
 
 const selectedFile = ref(null);
-const successMessage = ref('');
-const errorMessage = ref('');
+const modal = ref(null); // Ref to the modal dialog
 
 const handleFileUpload = (event) => {
   selectedFile.value = event.target.files[0];
 };
 
-const submitForm = async () => {
-  // Reset messages
-  // successMessage.value = '';
-  // errorMessage.value = '';
+const openModal = () => {
+  modal.value.showModal();
+};
 
+const closeModal = () => {
+  modal.value.close();
+};
+
+const submitForm = async () => {
   // Validate form inputs
   if (!form.value.name || !form.value.description || !selectedFile.value) {
-    errorMessage.value = 'Please fill in all required fields.';
+    useToastify('Please fill in all required fields.', {
+      type: 'error',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
     return;
   }
 
@@ -100,23 +107,23 @@ const submitForm = async () => {
       body: formData,
     });
 
-    // Since $fetch does not throw an error, the request was successful
-    // successMessage.value = result.message;
-
+    // Display success toast
     useToastify(result.message, {
       type: 'success',
       autoClose: 3000,
       position: ToastifyOption.POSITION.TOP_RIGHT,
     });
-    // Optionally, redirect to another page or reset the form
-    // router.push('/books'); // Redirect to books list
+
+    // Reset the form
     form.value.name = '';
     form.value.description = '';
     selectedFile.value = null;
-    // Reset the file input
     document.getElementById('image').value = '';
+
+    // Close the modal
+    closeModal();
   } catch (error) {
-    // Handle errors thrown by $fetch
+    // Handle errors
     useToastify('An error occurred', {
       type: 'error',
       autoClose: 3000,
