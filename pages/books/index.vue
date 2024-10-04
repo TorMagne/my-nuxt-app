@@ -1,51 +1,66 @@
 <template>
   <section class="book-create">
-    <h1 class="font-bold my-4">Create a New Book</h1>
-    <form @submit.prevent="submitForm" enctype="multipart/form-data">
-      <label class="form-control w-full max-w-xs mb-4">
-        <div class="label">
-          <span class="label-text">Book Name</span>
-        </div>
-        <input
-          placeholder="Book name"
-          class="input input-bordered w-full max-w-xs"
-          type="text"
-          id="name"
-          v-model="form.name"
-          required
-        />
-      </label>
+    <h1 class="font-bold my-4 text-2xl">Books</h1>
 
-      <label class="form-control mb-4">
-        <div class="label">
-          <span class="label-text">Book description</span>
-        </div>
-        <textarea
-          class="textarea textarea-bordered h-24"
-          placeholder="Book description"
-          id="description"
-          v-model="form.description"
-          required
-        ></textarea>
-      </label>
+    <!-- Open the modal using ID.showModal() method -->
+    <button class="btn btn-success" onclick="my_modal_1.showModal()">Create book</button>
+    <dialog id="my_modal_1" class="modal">
+      <div class="modal-box">
+        <h3 class="text-lg font-bold">Hello!</h3>
+        <form @submit.prevent="submitForm" enctype="multipart/form-data">
+          <label class="form-control w-full max-w-xs mb-4">
+            <div class="label">
+              <span class="label-text">Book Name</span>
+            </div>
+            <input
+              placeholder="Book name"
+              class="input input-bordered w-full max-w-xs"
+              type="text"
+              id="name"
+              v-model="form.name"
+              required
+            />
+          </label>
 
-      <label class="form-control w-full max-w-xs mb-4">
-        <div class="label">
-          <span class="label-text">Book Image</span>
-        </div>
-        <input
-          type="file"
-          id="image"
-          name="image"
-          @change="handleFileUpload"
-          accept="image/*"
-          required
-          class="file-input file-input-bordered w-full max-w-xs"
-        />
-      </label>
+          <label class="form-control mb-4">
+            <div class="label">
+              <span class="label-text">Book description</span>
+            </div>
+            <textarea
+              class="textarea textarea-bordered h-24"
+              placeholder="Book description"
+              id="description"
+              v-model="form.description"
+              required
+            ></textarea>
+          </label>
 
-      <button type="submit" class="btn btn-success">Create Book</button>
-    </form>
+          <label class="form-control w-full max-w-xs mb-4">
+            <div class="label">
+              <span class="label-text">Book Image</span>
+            </div>
+            <input
+              type="file"
+              id="image"
+              name="image"
+              @change="handleFileUpload"
+              accept="image/*"
+              required
+              class="file-input file-input-bordered w-full max-w-xs"
+            />
+          </label>
+
+          <button type="submit" class="btn btn-success">Save Book</button>
+        </form>
+
+        <div class="modal-action">
+          <form method="dialog">
+            <!-- if there is a button in form, it will close the modal -->
+            <button class="btn">Cancel</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
   </section>
 </template>
 
@@ -111,15 +126,3 @@ const submitForm = async () => {
   }
 };
 </script>
-
-<style scoped>
-.success-message {
-  color: green;
-  margin-top: 20px;
-}
-
-.error-message {
-  color: red;
-  margin-top: 20px;
-}
-</style>
