@@ -1,11 +1,22 @@
-const mongoose = require('mongoose');
+// ~/server/models/bookModel.js
+import mongoose from 'mongoose';
 
-const SubjectSchema = new mongoose.Schema({
-  name: String,
-  description: String,
-  image: String,
-  created_at: { type: Date, default: Date.now },
-  updated_at: { type: Date, default: Date.now },
-});
+const bookSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-export default mongoose.models.Book || mongoose.model('Book', SubjectSchema);
+export default mongoose.models.Book || mongoose.model('Book', bookSchema);
