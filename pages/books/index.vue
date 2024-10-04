@@ -19,7 +19,7 @@
     </label>
 
     <!-- Open the modal using Vue's @click directive -->
-    <button class="btn btn-success" @click="openModal">Create book</button>
+    <button class="btn btn-success mb-4" @click="openModal">Create book</button>
     <dialog id="my_modal_1" class="modal" ref="modal">
       <div class="modal-box">
         <h3 class="text-lg font-bold">Create a New Book</h3>
@@ -84,6 +84,7 @@
             <tr>
               <th class="text-black">Book Name</th>
               <th class="text-black">Description</th>
+              <th class="text-black">Image</th>
               <th class="text-black">Action</th>
             </tr>
           </thead>
@@ -91,6 +92,9 @@
             <tr v-for="book in paginatedBooks" :key="book._id">
               <td class="text-black">{{ book.name }}</td>
               <td class="text-black">{{ book.description }}</td>
+              <td>
+                <img :src="`${book.image}`" width="50" />
+              </td>
               <td>
                 <button class="btn btn-success btn-sm">Edit book</button>
               </td>
@@ -244,5 +248,7 @@ watch(searchQuery, () => {
 });
 
 // Fetch books initially
-fetchBooks();
+onMounted(() => {
+  fetchBooks();
+});
 </script>

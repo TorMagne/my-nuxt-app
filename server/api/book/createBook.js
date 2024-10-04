@@ -72,7 +72,7 @@ export default defineEventHandler(async (event) => {
         fs.copyFileSync(imageFile.filepath, newFilePath);
 
         // Set the image path relative to the public directory
-        imagePath = `/images/${fileName}`;
+        imagePath = `/bookImages/${fileName}`;
       }
 
       // Log fields before adjustment
