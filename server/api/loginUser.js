@@ -31,8 +31,9 @@ export default defineEventHandler(async (event) => {
       }
 
       // If the password is valid, return a success response
-      const userData = user.toObject();
-      delete userData.password; // Remove sensitive fields
+      const userData = JSON.parse(JSON.stringify(user));
+      delete userData.__v;
+      delete userData.password;
 
       return {
         status: 200,

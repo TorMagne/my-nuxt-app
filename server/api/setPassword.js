@@ -16,7 +16,9 @@ export default defineEventHandler(async (event) => {
 
       await user.save();
 
-      const userData = user.toObject();
+      const userData = JSON.parse(JSON.stringify(user));
+      delete userData.__v;
+      delete userData.password;
 
       return {
         status: 200,
