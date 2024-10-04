@@ -1,5 +1,7 @@
 <template>
   <section>
+    <h1 class="font-bold my-4 text-2xl">Users</h1>
+
     <label class="input input-bordered flex items-center gap-2 my-8">
       <input v-model="searchQuery" type="text" class="grow" placeholder="Search" />
       <svg
@@ -58,8 +60,6 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
-
 const errorInfo = ref(null);
 const currentPage = ref(1);
 const itemsPerPage = 10;
