@@ -16,9 +16,11 @@ export default defineEventHandler(async (event) => {
 
       await user.save();
 
+      const userData = user.toObject();
+
       return {
         status: 200,
-        body: { message: 'Password set successfully', user },
+        body: { message: 'Password set successfully', user: userData },
       };
     } catch (error) {
       return {
