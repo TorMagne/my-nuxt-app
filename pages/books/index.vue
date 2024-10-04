@@ -1,5 +1,5 @@
 <template>
-  <div class="book-create">
+  <section class="book-create">
     <h1>Create a New Book</h1>
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
       <div>
@@ -34,13 +34,10 @@
     <div v-if="errorMessage" class="error-message">
       {{ errorMessage }}
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-
 const form = ref({
   name: '',
   description: '',
@@ -49,7 +46,6 @@ const form = ref({
 const selectedFile = ref(null);
 const successMessage = ref('');
 const errorMessage = ref('');
-const router = useRouter();
 
 const handleFileUpload = (event) => {
   selectedFile.value = event.target.files[0];
