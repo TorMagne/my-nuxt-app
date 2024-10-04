@@ -189,6 +189,7 @@ const handleSetPassword = async () => {
     });
 
     // console.log('Password set successfully:', data);
+    AuthStore.setLoggedInUser(data.body.user);
     await navigateTo('/games');
   } catch (error) {
     // console.error('Error setting password:', error);
