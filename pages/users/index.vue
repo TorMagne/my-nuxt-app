@@ -60,12 +60,22 @@
 </template>
 
 <script setup>
+import { useAuthStore } from '~/stores/auth/AuthStore';
+
+const AuthStore = useAuthStore();
+
 const errorInfo = ref(null);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const searchQuery = ref('');
 
-const { data: users, error } = await useAsyncData('users', () => $fetch('/api/users'));
+const { data: users, error } = await useAsyncData('users', () =>
+  $fetch('/api/users', {
+    headers: {
+      Authorization: `Bearer ${AuthStore.user.token}`,
+    },
+  })
+);
 
 if (error.value) {
   console.error('Error fetching users:', error.value);

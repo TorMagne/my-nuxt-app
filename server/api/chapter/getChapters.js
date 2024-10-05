@@ -1,6 +1,10 @@
 import Chapter from '~/server/models/chapterModel';
+import verifyJwt from '~/server/utils/verifyJwt';
 
 export default defineEventHandler(async (event) => {
+  // Apply JWT verification middleware
+  await verifyJwt(event);
+
   const method = event.node.req.method;
 
   if (method === 'GET') {

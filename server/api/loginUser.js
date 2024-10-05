@@ -1,9 +1,11 @@
 import User from '~/server/models/userModel';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { createError } from 'h3';
 
 export default defineEventHandler(async (event) => {
   const { req } = event.node;
+  const config = useRuntimeConfig(); // Access runtime configuration
 
   if (req.method === 'POST') {
     try {
@@ -30,8 +32,14 @@ export default defineEventHandler(async (event) => {
         });
       }
 
-      // If the password is valid, return a success response
+      // Generate JWT token
+      const token = jwt.sign({ userId: user._id }, config.JWT_SECRET); // Use runtime configuration
+
+      console.log('TOKEN:', token);
+
+      // If the password is valid, return a success response with the token
       const userData = JSON.parse(JSON.stringify(user));
+      userData.token = token;
       delete userData.__v;
       delete userData.password;
 

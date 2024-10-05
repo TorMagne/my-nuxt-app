@@ -1,4 +1,5 @@
 import User from '~/server/models/userModel';
+import verifyJwt from '~/server/utils/verifyJwt';
 
 export default defineEventHandler(async (event) => {
   const { req } = event.node;
@@ -41,6 +42,8 @@ export default defineEventHandler(async (event) => {
   }
 
   if (req.method === 'GET') {
+    // Apply JWT verification middleware
+    await verifyJwt(event);
     // get all users
     const users = await User.find().lean(); // Use .lean() to get plain objects
     return {

@@ -1,10 +1,14 @@
 import Book from '~/server/models/bookModel';
 import formidable from 'formidable';
-// import { sendError, createError, defineEventHandler } from 'h3';
 import fs from 'fs';
 import path from 'path';
 
+import verifyJwt from '~/server/utils/verifyJwt';
+
 export default defineEventHandler(async (event) => {
+  // Apply JWT verification middleware
+  await verifyJwt(event);
+
   const method = event.node.req.method;
 
   if (method === 'POST') {

@@ -120,7 +120,9 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { useAuthStore } from '~/stores/auth/AuthStore';
+
+const AuthStore = useAuthStore();
 
 const form = ref({
   name: '',
@@ -150,7 +152,11 @@ const closeModal = () => {
 
 const fetchBooks = async () => {
   try {
-    const result = await $fetch('/api/book/getBooks');
+    const result = await $fetch('/api/book/getBooks', {
+      headers: {
+        Authorization: `Bearer ${AuthStore.user.token}`,
+      },
+    });
 
     books.value = result;
   } catch (error) {
@@ -178,6 +184,9 @@ const submitForm = async () => {
     const result = await $fetch('/api/book/createBook', {
       method: 'POST',
       body: formData,
+      headers: {
+        Authorization: `Bearer ${AuthStore.user.token}`,
+      },
     });
 
     // Display success toast

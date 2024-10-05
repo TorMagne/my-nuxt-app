@@ -129,7 +129,9 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { useAuthStore } from '~/stores/auth/AuthStore';
+
+const AuthStore = useAuthStore();
 
 const form = ref({
   book: '',
@@ -157,7 +159,11 @@ const closeModal = () => {
 
 const fetchChapters = async () => {
   try {
-    const result = await $fetch('/api/chapter/getChapters');
+    const result = await $fetch('/api/chapter/getChapters', {
+      headers: {
+        Authorization: `Bearer ${AuthStore.user.token}`,
+      },
+    });
     chapters.value = result;
     console.log('Chapters:', result.body);
   } catch (error) {
@@ -167,7 +173,11 @@ const fetchChapters = async () => {
 
 const fetchBooks = async () => {
   try {
-    const result = await $fetch('/api/book/getBooks');
+    const result = await $fetch('/api/book/getBooks', {
+      headers: {
+        Authorization: `Bearer ${AuthStore.user.token}`,
+      },
+    });
     books.value = result;
   } catch (error) {
     console.error('Error fetching books:', error);
@@ -196,6 +206,9 @@ const submitForm = async () => {
     const result = await $fetch('/api/chapter/createChapter', {
       method: 'POST',
       body: formData,
+      headers: {
+        Authorization: `Bearer ${AuthStore.user.token}`,
+      },
     });
 
     console.log('Chapter created successfully:', result);

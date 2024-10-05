@@ -1,6 +1,10 @@
 import Book from '~/server/models/bookModel';
+import verifyJwt from '~/server/utils/verifyJwt';
 
 export default defineEventHandler(async (event) => {
+  // Apply JWT verification middleware
+  await verifyJwt(event);
+
   const method = event.node.req.method;
   if (method === 'GET') {
     try {
