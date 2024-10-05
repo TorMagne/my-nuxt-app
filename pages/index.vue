@@ -212,7 +212,19 @@ const handleLoginWithPassword = async () => {
     await navigateTo('/games');
   } catch (error) {
     if (error.status === 401) {
-      useToastify('Invalid password', {
+      useToastify(error.statusMessage, {
+        type: 'error',
+        autoClose: 3000,
+        position: ToastifyOption.POSITION.TOP_RIGHT,
+      });
+    } else if (error.status === 404) {
+      useToastify(error.statusMessage, {
+        type: 'error',
+        autoClose: 3000,
+        position: ToastifyOption.POSITION.TOP_RIGHT,
+      });
+    } else {
+      useToastify('Something wrong happened', {
         type: 'error',
         autoClose: 3000,
         position: ToastifyOption.POSITION.TOP_RIGHT,

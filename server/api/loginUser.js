@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
       }
 
       // Generate JWT token
-      const token = jwt.sign({ userId: user._id }, config.JWT_SECRET); // Use runtime configuration
+      const token = jwt.sign({ userId: user._id }, config.JWT_SECRET);
 
       console.log('TOKEN:', token);
 
