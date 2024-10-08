@@ -15,7 +15,7 @@ const seedUsers = async () => {
 
     for (let i = 1; i <= 105; i++) {
       users.push({
-        userNumber: `user${i}`,
+        userNumber: `${i}`,
         group: i <= 50 ? 'A' : 'B',
         role: i > 100 ? 'admin' : 'student',
       });
