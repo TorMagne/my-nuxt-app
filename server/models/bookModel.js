@@ -1,4 +1,3 @@
-// ~/server/models/bookModel.js
 import mongoose from 'mongoose';
 
 const bookSchema = new mongoose.Schema(
