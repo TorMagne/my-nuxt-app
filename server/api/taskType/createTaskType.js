@@ -7,21 +7,49 @@ export default defineEventHandler(async (event) => {
 
   if (event.node.req.method === 'POST') {
     try {
-      const { name, description } = await readBody(event);
+      const body = await readBody(event);
 
-      const newTaskType = await TaskType.create({ name, description });
+      if (!body.name) {
+        return sendError(
+          event,
+          createError({
+            statusCode: 400,
+            statusMessage: 'Name is a required field',
+          })
+        );
+      }
+
+      const newTaskType = new TaskType({
+        name: body.name,
+        description: body.description,
+      });
+
+      const savedTaskType = await newTaskType.save();
 
       return {
         statusCode: 201,
         statusMessage: 'Task type created successfully',
-        taskType: newTaskType,
+        taskType: savedTaskType,
       };
     } catch (error) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Could not create task type',
-        data: error.message,
-      });
+      console.error('Error creating task type:', error); // Detailed error logging
+      return sendError(
+        event,
+        createError({
+          statusCode: 500,
+          statusMessage: 'An error occurred while creating the task type',
+          data: error.message,
+        })
+      );
     }
+  } else {
+    // Handle other HTTP methods
+    return sendError(
+      event,
+      createError({
+        statusCode: 405,
+        statusMessage: 'Method Not Allowed',
+      })
+    );
   }
 });

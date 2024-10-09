@@ -1,7 +1,7 @@
 <template>
   <section>
     <h1 class="font-bold my-4 text-2xl">Task types</h1>
-
+    <!-- 
     <label class="input input-bordered flex items-center gap-2 my-8">
       <input v-model="searchQuery" type="text" class="grow" placeholder="Search" />
       <svg
@@ -16,7 +16,7 @@
           clip-rule="evenodd"
         />
       </svg>
-    </label>
+    </label> -->
 
     <button class="btn btn-success mb-4" @click="openModal">Create Task type</button>
     <dialog id="my_modal_1" class="modal" ref="modal">
@@ -60,6 +60,10 @@
   </section>
 </template>
 <script setup>
+import { useAuthStore } from '~/stores/auth/AuthStore';
+
+const AuthStore = useAuthStore();
+
 const modal = ref(null);
 const form = ref({
   name: '',
@@ -68,5 +72,54 @@ const form = ref({
 
 const openModal = () => {
   modal.value.showModal();
+};
+
+const closeModal = () => {
+  modal.value.close();
+};
+
+const submitForm = async () => {
+  if (!form.value.name) {
+    useToastify('Please fill Task type name.', {
+      type: 'error',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
+    return;
+  }
+
+  const formData = {
+    name: form.value.name,
+    description: form.value.description,
+  };
+
+  try {
+    const result = await $fetch('/api/taskType/createTaskType', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${AuthStore.user.token}`,
+      },
+    });
+
+    useToastify(result.statusMessage, {
+      type: 'success',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
+
+    form.value.name = '';
+    form.value.description = '';
+
+    console.log('Task type created => ', result);
+
+    closeModal();
+  } catch (error) {
+    useToastify(error.statusMessage, {
+      type: 'error',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
+  }
 };
 </script>
