@@ -60,7 +60,7 @@
               Games</NuxtLink
             >
           </li>
-          <li>
+          <li v-if="AuthStore.user.role === 'admin'">
             <NuxtLink to="/users" activeClass="active-link">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +79,7 @@
               Users</NuxtLink
             >
           </li>
-          <li>
+          <li v-if="AuthStore.user.role === 'admin'">
             <NuxtLink to="/books" activeClass="active-link">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +98,7 @@
               Books</NuxtLink
             >
           </li>
-          <li>
+          <li v-if="AuthStore.user.role === 'admin'">
             <NuxtLink to="/chapters" activeClass="active-link">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
