@@ -116,7 +116,7 @@ const itemsPerPage = 10;
 const searchQuery = ref('');
 
 const { data: users, error } = await useAsyncData('users', () =>
-  $fetch('/api/users', {
+  $fetch('/api/user/users', {
     headers: {
       Authorization: `Bearer ${AuthStore.user.token}`,
     },
@@ -175,7 +175,7 @@ const closeModal = (id) => {
 
 const updateUser = async (id) => {
   try {
-    const response = await $fetch(`/api/editUser/${id}`, {
+    const response = await $fetch(`/api/user/editUser/${id}`, {
       method: 'PUT',
       body: editingUser.value,
       headers: {

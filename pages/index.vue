@@ -133,7 +133,7 @@ const errorInfo = ref('');
 
 const handleLogin = async () => {
   try {
-    const data = await $fetch('/api/users', {
+    const data = await $fetch('/api/user/users', {
       method: 'POST',
       body: { userNumber: loginNumber.value },
       throw: false, // Disable automatic error throwing
@@ -180,7 +180,7 @@ const handleLogin = async () => {
 
 const handleSetPassword = async () => {
   try {
-    const data = await $fetch('/api/setPassword', {
+    const data = await $fetch('/api/user/setPassword', {
       method: 'POST',
       body: {
         userNumber: loginNumber.value,
@@ -199,7 +199,7 @@ const handleSetPassword = async () => {
 
 const handleLoginWithPassword = async () => {
   try {
-    const data = await $fetch('/api/loginUser', {
+    const data = await $fetch('/api/user/loginUser', {
       method: 'POST',
       body: {
         userNumber: loginNumber.value,
