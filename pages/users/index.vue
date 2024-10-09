@@ -36,7 +36,7 @@
               <td class="text-black">{{ user.userNumber }}</td>
               <td class="text-black">{{ user.role }}</td>
               <td>
-                <button class="btn btn-info btn-sm">Edit user</button>
+                <button class="btn btn-info btn-sm" @click="openModal(user._id)">Edit user</button>
               </td>
             </tr>
           </tbody>
@@ -56,6 +56,25 @@
         </button>
       </div>
     </div>
+
+    <!-- Open the modal using ID.showModal() method -->
+    <dialog
+      v-for="user in paginatedUsers"
+      :id="`my_modal_${user._id}`"
+      :key="user._id"
+      class="modal"
+    >
+      <div class="modal-box">
+        <h3 class="text-lg font-bold">Edit User: {{ user.userNumber }}</h3>
+        <p class="py-4">Role: {{ user.role }}</p>
+        <div class="modal-action">
+          <form method="dialog">
+            <!-- if there is a button in form, it will close the modal -->
+            <button class="btn">Close</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
   </section>
 </template>
 
@@ -113,6 +132,10 @@ const nextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
   }
+};
+
+const openModal = (id) => {
+  document.getElementById(`my_modal_${id}`).showModal();
 };
 
 // Watch the searchQuery and reset currentPage to 1 when it changes
