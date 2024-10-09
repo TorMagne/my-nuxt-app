@@ -27,7 +27,7 @@
             <div class="label">
               <span class="label-text">Select book</span>
             </div>
-            <select class="select select-bordered" v-model="editForm.book" required>
+            <select class="select select-bordered" v-model="form.book" required>
               <option disabled value="">Select a book</option>
               <option v-for="book in books" :key="book._id" :value="book._id">
                 {{ book.name }}
@@ -138,6 +138,7 @@
               <span class="label-text">Select book</span>
             </div>
             <select class="select select-bordered" v-model="editForm.book" required>
+              <option disabled value="">Select a book</option>
               <option v-for="book in books" :key="book._id" :value="book._id">
                 {{ book.name }}
               </option>
@@ -280,6 +281,8 @@ const fetchBooks = async () => {
 };
 
 const submitForm = async () => {
+  console.log('Form:', form.value);
+
   if (!form.value.book || !form.value.name) {
     useToastify('Please fill in all required fields.', {
       type: 'error',
@@ -369,6 +372,8 @@ const getBookName = (book) => {
 };
 
 const openEditModal = (chapter) => {
+  console.log('Editing chapter:', chapter);
+
   editForm.value = {
     ...chapter,
     book: chapter.book._id, // Set the book ID instead of the whole book object
