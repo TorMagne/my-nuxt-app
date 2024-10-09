@@ -4,10 +4,9 @@ import jwt from 'jsonwebtoken';
 import { createError } from 'h3';
 
 export default defineEventHandler(async (event) => {
-  const { req } = event.node;
   const config = useRuntimeConfig(); // Access runtime configuration
 
-  if (req.method === 'POST') {
+  if (event.node.req.method === 'POST') {
     try {
       const body = await readBody(event);
       const { userNumber, password } = body;

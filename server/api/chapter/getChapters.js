@@ -5,9 +5,7 @@ export default defineEventHandler(async (event) => {
   // Apply JWT verification middleware
   await verifyJwt(event);
 
-  const method = event.node.req.method;
-
-  if (method === 'GET') {
+  if (event.node.req.method === 'GET') {
     try {
       //
       const chapters = await Chapter.find().populate('book');

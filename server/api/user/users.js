@@ -2,9 +2,7 @@ import User from '~/server/models/userModel';
 import verifyJwt from '~/server/utils/verifyJwt';
 
 export default defineEventHandler(async (event) => {
-  const { req } = event.node;
-
-  if (req.method === 'POST') {
+  if (event.node.req.method === 'POST') {
     try {
       const body = await readBody(event);
       const { userNumber } = body;
@@ -41,7 +39,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  if (req.method === 'GET') {
+  if (event.node.req.method === 'GET') {
     // Apply JWT verification middleware
     await verifyJwt(event);
     // get all users

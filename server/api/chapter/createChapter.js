@@ -5,9 +5,7 @@ export default defineEventHandler(async (event) => {
   // Apply JWT verification middleware
   await verifyJwt(event);
 
-  const method = event.node.req.method;
-
-  if (method === 'POST') {
+  if (event.node.req.method === 'POST') {
     try {
       const body = await readBody(event);
 

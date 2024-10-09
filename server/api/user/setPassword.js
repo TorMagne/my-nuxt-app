@@ -3,9 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export default defineEventHandler(async (event) => {
-  const { req } = event.node;
-
-  if (req.method === 'POST') {
+  if (event.node.req.method === 'POST') {
     try {
       const body = await readBody(event);
       const { userNumber, password } = body;
