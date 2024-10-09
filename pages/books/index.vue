@@ -61,7 +61,6 @@
               name="image"
               @change="handleFileUpload"
               accept="image/*"
-              required
               class="file-input file-input-bordered w-full max-w-xs"
             />
           </label>
@@ -166,7 +165,7 @@ const fetchBooks = async () => {
 
 const submitForm = async () => {
   // Validate form inputs
-  if (!form.value.name || !form.value.description || !selectedFile.value) {
+  if (!form.value.name || !form.value.description) {
     useToastify('Please fill in all required fields.', {
       type: 'error',
       autoClose: 3000,
