@@ -64,12 +64,11 @@
             />
           </label>
 
-          <button type="submit" class="btn btn-success">Save Book</button>
+          <div class="flex justify-between mt-8">
+            <button type="submit" class="btn btn-success">Save Book</button>
+            <button type="button" class="btn btn-warning" @click="closeModal">Cancel</button>
+          </div>
         </form>
-
-        <div class="modal-action">
-          <button class="btn btn-warning" @click="closeModal">Cancel</button>
-        </div>
       </div>
     </dialog>
 
@@ -158,8 +157,12 @@
             />
           </label>
 
-          <button type="submit" class="btn btn-success">Update Book</button>
-          <button type="button" class="btn btn-warning ml-2" @click="closeEditModal">Cancel</button>
+          <div class="flex justify-between mt-8">
+            <button type="submit" class="btn btn-success">Update Book</button>
+            <button type="button" class="btn btn-warning ml-2" @click="closeEditModal">
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </dialog>

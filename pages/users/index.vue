@@ -95,9 +95,11 @@
               <option value="B">B</option>
             </select>
           </div>
-          <div class="modal-action">
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-            <button type="button" class="btn" @click="closeModal(user._id)">Cancel</button>
+          <div class="flex justify-between mt-8">
+            <button type="submit" class="btn btn-success">Save Changes</button>
+            <button type="button" class="btn btn-warning" @click="closeModal(user._id)">
+              Cancel
+            </button>
           </div>
         </form>
       </div>
