@@ -18,7 +18,6 @@
       </svg>
     </label>
 
-    <!-- Open the modal using Vue's @click directive -->
     <button class="btn btn-success mb-4" @click="openModal">Create book</button>
     <dialog id="my_modal_1" class="modal" ref="modal">
       <div class="modal-box">
@@ -69,7 +68,6 @@
         </form>
 
         <div class="modal-action">
-          <!-- Close the modal when clicking "Cancel" -->
           <button class="btn btn-warning" @click="closeModal">Cancel</button>
         </div>
       </div>
@@ -84,7 +82,7 @@
               <th class="text-black">Book Name</th>
               <th class="text-black">Description</th>
               <th class="text-black">Image</th>
-              <th class="text-black">Action</th>
+              <th class="text-black">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -92,10 +90,11 @@
               <td class="text-black">{{ book.name }}</td>
               <td class="text-black">{{ book.description }}</td>
               <td>
-                <img :src="`${book.image}`" width="50" />
+                <img :src="`${book.image}`" width="50" alt="Book cover" />
               </td>
               <td>
-                <button class="btn btn-info btn-sm">Edit book</button>
+                <button class="btn btn-info btn-sm mr-2" @click="openEditModal(book)">Edit</button>
+                <button class="btn btn-error btn-sm" @click="confirmDelete(book)">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -115,6 +114,67 @@
         </button>
       </div>
     </div>
+
+    <!-- Edit Book Modal -->
+    <dialog id="edit_modal" class="modal" ref="editModal">
+      <div class="modal-box">
+        <h3 class="text-lg font-bold">Edit Book</h3>
+        <form @submit.prevent="updateBook" enctype="multipart/form-data">
+          <label class="form-control w-full max-w-xs mb-4">
+            <div class="label">
+              <span class="label-text">Book Name</span>
+            </div>
+            <input
+              placeholder="Book name"
+              class="input input-bordered w-full max-w-xs"
+              type="text"
+              v-model="editForm.name"
+              required
+            />
+          </label>
+
+          <label class="form-control mb-4">
+            <div class="label">
+              <span class="label-text">Book Description</span>
+            </div>
+            <textarea
+              class="textarea textarea-bordered h-24"
+              placeholder="Book description"
+              v-model="editForm.description"
+              required
+            ></textarea>
+          </label>
+
+          <label class="form-control w-full max-w-xs mb-4">
+            <div class="label">
+              <span class="label-text">Book Image</span>
+            </div>
+            <input
+              type="file"
+              name="image"
+              @change="handleEditFileUpload"
+              accept="image/*"
+              class="file-input file-input-bordered w-full max-w-xs"
+            />
+          </label>
+
+          <button type="submit" class="btn btn-success">Update Book</button>
+          <button type="button" class="btn btn-warning ml-2" @click="closeEditModal">Cancel</button>
+        </form>
+      </div>
+    </dialog>
+
+    <!-- Delete Confirmation Modal -->
+    <dialog id="delete_confirm_modal" class="modal" ref="deleteConfirmModal">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg">Confirm Deletion</h3>
+        <p class="py-4">Are you sure you want to delete this book?</p>
+        <div class="modal-action">
+          <button class="btn btn-error" @click="deleteBook">Delete</button>
+          <button class="btn" @click="closeDeleteConfirmModal">Cancel</button>
+        </div>
+      </div>
+    </dialog>
   </section>
 </template>
 
@@ -133,9 +193,19 @@ const itemsPerPage = 10;
 const searchQuery = ref('');
 
 const selectedFile = ref(null);
-const modal = ref(null); // Ref to the modal dialog
-
+const modal = ref(null);
 const books = ref([]);
+
+const editForm = ref({
+  _id: '',
+  name: '',
+  description: '',
+});
+const editModal = ref(null);
+const editSelectedFile = ref(null);
+
+const deleteConfirmModal = ref(null);
+const bookToDelete = ref(null);
 
 const handleFileUpload = (event) => {
   selectedFile.value = event.target.files[0];
@@ -164,7 +234,6 @@ const fetchBooks = async () => {
 };
 
 const submitForm = async () => {
-  // Validate form inputs
   if (!form.value.name || !form.value.description) {
     useToastify('Please fill in all required fields.', {
       type: 'error',
@@ -188,26 +257,20 @@ const submitForm = async () => {
       },
     });
 
-    // Display success toast
     useToastify(result.message, {
       type: 'success',
       autoClose: 3000,
       position: ToastifyOption.POSITION.TOP_RIGHT,
     });
 
-    // Reset the form
     form.value.name = '';
     form.value.description = '';
     selectedFile.value = null;
     document.getElementById('image').value = '';
 
-    // Close the modal
     closeModal();
-
-    // Fetch books again
     fetchBooks();
   } catch (error) {
-    // Handle errors
     useToastify('An error occurred', {
       type: 'error',
       autoClose: 3000,
@@ -250,12 +313,111 @@ const nextPage = () => {
   }
 };
 
-// Watch the searchQuery and reset currentPage to 1 when it changes
+const openEditModal = (book) => {
+  editForm.value = { ...book };
+  editModal.value.showModal();
+};
+
+const closeEditModal = () => {
+  editModal.value.close();
+};
+
+const handleEditFileUpload = (event) => {
+  editSelectedFile.value = event.target.files[0];
+};
+
+const updateBook = async () => {
+  if (!editForm.value.name || !editForm.value.description) {
+    useToastify('Please fill in all required fields.', {
+      type: 'error',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('name', editForm.value.name);
+  formData.append('description', editForm.value.description);
+  if (editSelectedFile.value) {
+    formData.append('image', editSelectedFile.value);
+  }
+
+  try {
+    const { message, book } = await $fetch(`/api/book/${editForm.value._id}`, {
+      method: 'PUT',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${AuthStore.user.token}`,
+      },
+    });
+
+    useToastify(message, {
+      type: 'success',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
+
+    const index = books.value.findIndex((b) => b._id === book._id);
+    if (index !== -1) {
+      books.value[index] = book;
+    }
+
+    closeEditModal();
+  } catch (error) {
+    useToastify('An error occurred while updating the book', {
+      type: 'error',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
+    console.error(error);
+  }
+};
+
+const confirmDelete = (book) => {
+  bookToDelete.value = book;
+  deleteConfirmModal.value.showModal();
+};
+
+const closeDeleteConfirmModal = () => {
+  deleteConfirmModal.value.close();
+  bookToDelete.value = null;
+};
+
+const deleteBook = async () => {
+  if (!bookToDelete.value) return;
+
+  try {
+    const { message } = await $fetch(`/api/book/${bookToDelete.value._id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${AuthStore.user.token}`,
+      },
+    });
+
+    useToastify(message, {
+      type: 'success',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
+
+    books.value = books.value.filter((b) => b._id !== bookToDelete.value._id);
+
+    closeDeleteConfirmModal();
+  } catch (error) {
+    useToastify('An error occurred while deleting the book', {
+      type: 'error',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
+    console.error(error);
+  }
+};
+
 watch(searchQuery, () => {
   currentPage.value = 1;
 });
 
-// Fetch books initially
 onMounted(() => {
   fetchBooks();
 });

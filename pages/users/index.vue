@@ -27,6 +27,7 @@
           <thead>
             <tr>
               <th class="text-black">User Number</th>
+              <th class="text-black">Group</th>
               <th class="text-black">Role</th>
               <th class="text-black">Action</th>
             </tr>
@@ -34,6 +35,7 @@
           <tbody>
             <tr v-for="user in paginatedUsers" :key="user._id">
               <td class="text-black">{{ user.userNumber }}</td>
+              <td class="text-black">{{ user.group }}</td>
               <td class="text-black">{{ user.role }}</td>
               <td>
                 <button class="btn btn-info btn-sm" @click="openModal(user._id)">Edit user</button>
@@ -66,13 +68,38 @@
     >
       <div class="modal-box">
         <h3 class="text-lg font-bold">Edit User: {{ user.userNumber }}</h3>
-        <p class="py-4">Role: {{ user.role }}</p>
-        <div class="modal-action">
-          <form method="dialog">
-            <!-- if there is a button in form, it will close the modal -->
-            <button class="btn">Close</button>
-          </form>
-        </div>
+        <form @submit.prevent="updateUser(user._id)">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">User Number</span>
+            </label>
+            <input
+              v-model="editingUser.userNumber"
+              type="text"
+              class="input input-bordered"
+              required
+            />
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Role</span>
+            </label>
+            <input v-model="editingUser.role" type="text" class="input input-bordered" required />
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Group</span>
+            </label>
+            <select v-model="editingUser.group" class="select select-bordered" required>
+              <option value="A">A</option>
+              <option value="B">B</option>
+            </select>
+          </div>
+          <div class="modal-action">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn" @click="closeModal(user._id)">Cancel</button>
+          </div>
+        </form>
       </div>
     </dialog>
   </section>
@@ -135,8 +162,45 @@ const nextPage = () => {
 };
 
 const openModal = (id) => {
+  const user = users.value.body.find((u) => u._id === id);
+  if (user) {
+    editingUser.value = { ...user };
+  }
   document.getElementById(`my_modal_${id}`).showModal();
 };
+
+const closeModal = (id) => {
+  document.getElementById(`my_modal_${id}`).close();
+};
+
+const updateUser = async (id) => {
+  try {
+    const response = await $fetch(`/api/editUser/${id}`, {
+      method: 'PUT',
+      body: editingUser.value,
+      headers: {
+        Authorization: `Bearer ${AuthStore.user.token}`,
+      },
+    });
+
+    // Oppdater brukeren i den lokale listen
+    const index = users.value.body.findIndex((u) => u._id === id);
+    if (index !== -1) {
+      users.value.body[index] = response;
+    }
+    closeModal(id);
+    // Vis en suksessmelding her hvis ønskelig
+  } catch (error) {
+    console.error('Error updating user:', error);
+    // Vis en feilmelding her hvis ønskelig
+  }
+};
+
+const editingUser = ref({
+  userNumber: '',
+  role: '',
+  group: '',
+});
 
 // Watch the searchQuery and reset currentPage to 1 when it changes
 watch(searchQuery, () => {
