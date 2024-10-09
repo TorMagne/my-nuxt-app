@@ -27,8 +27,8 @@
             <div class="label">
               <span class="label-text">Select book</span>
             </div>
-            <select class="select select-bordered" v-model="form.book" required>
-              <option disabled selected value="">Select a book</option>
+            <select class="select select-bordered" v-model="editForm.book" required>
+              <option disabled value="">Select a book</option>
               <option v-for="book in books" :key="book._id" :value="book._id">
                 {{ book.name }}
               </option>
@@ -357,15 +357,22 @@ const nextPage = () => {
   }
 };
 
-const getBookName = (bookId) => {
-  const book = books.value.find((b) => b._id === bookId._id);
-  console.log(book);
-
-  return book ? book.name : 'Unknown Book';
+const getBookName = (book) => {
+  if (!book) return 'Unknown Book';
+  if (typeof book === 'string') {
+    // If book is just an ID
+    const foundBook = books.value.find((b) => b._id === book._id);
+    return foundBook ? foundBook.name : 'Unknown Book';
+  }
+  // If book is an object
+  return book.name || 'Unknown Book';
 };
 
 const openEditModal = (chapter) => {
-  editForm.value = { ...chapter };
+  editForm.value = {
+    ...chapter,
+    book: chapter.book._id, // Set the book ID instead of the whole book object
+  };
   editModal.value.showModal();
 };
 
@@ -398,10 +405,7 @@ const updateChapter = async () => {
       position: ToastifyOption.POSITION.TOP_RIGHT,
     });
 
-    const index = chapters.value.findIndex((c) => c._id === chapter._id);
-    if (index !== -1) {
-      chapters.value[index] = chapter;
-    }
+    fetchChapters();
 
     closeEditModal();
   } catch (error) {
