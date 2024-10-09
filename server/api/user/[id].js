@@ -5,29 +5,35 @@ export default defineEventHandler(async (event) => {
   // Verifiser JWT
   await verifyJwt(event);
 
-  try {
-    const id = event.context.params.id;
-    const { userNumber, group, role } = await readBody(event);
+  if (event.node.req.method === 'PUT') {
+    try {
+      const id = event.context.params.id;
+      const { userNumber, group, role } = await readBody(event);
 
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      { userNumber, group, role },
-      { new: true, runValidators: true }
-    );
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        { userNumber, group, role },
+        { new: true, runValidators: true }
+      );
 
-    if (!updatedUser) {
+      if (!updatedUser) {
+        throw createError({
+          statusCode: 404,
+          statusMessage: 'User not found',
+        });
+      }
+
+      return {
+        statusCode: 200,
+        statusMessage: 'User updated successfully',
+        user: updatedUser,
+      };
+    } catch (error) {
       throw createError({
-        statusCode: 404,
-        statusMessage: 'User not found',
+        statusCode: 400,
+        statusMessage: 'Could not update user',
+        data: error.message,
       });
     }
-
-    return updatedUser;
-  } catch (error) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Could not update user',
-      data: error.message,
-    });
   }
 });

@@ -114,25 +114,32 @@ const errorInfo = ref(null);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const searchQuery = ref('');
+const users = ref([]);
 
-const { data: users, error } = await useAsyncData('users', () =>
-  $fetch('/api/user/users', {
-    headers: {
-      Authorization: `Bearer ${AuthStore.user.token}`,
-    },
-  })
-);
+const getAllUsers = async () => {
+  try {
+    const response = await $fetch('/api/user/users', {
+      headers: {
+        Authorization: `Bearer ${AuthStore.user.token}`,
+      },
+    });
+    users.value = response.body;
 
-if (error.value) {
-  console.error('Error fetching users:', error.value);
-  errorInfo.value = error.value.message || 'Error fetching users';
-}
+    console.log('Users => ', response);
+  } catch (error) {
+    useToastify(error.statusMessage, {
+      type: 'error',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
+  }
+};
 
 const filteredUsers = computed(() => {
   if (!searchQuery.value) {
-    return users.value.body;
+    return users.value;
   }
-  return users.value.body.filter(
+  return users.value.filter(
     (user) =>
       user.userNumber.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       user.role.toLowerCase().includes(searchQuery.value.toLowerCase())
@@ -162,7 +169,7 @@ const nextPage = () => {
 };
 
 const openModal = (id) => {
-  const user = users.value.body.find((u) => u._id === id);
+  const user = users.value.find((u) => u._id === id);
   if (user) {
     editingUser.value = { ...user };
   }
@@ -175,7 +182,7 @@ const closeModal = (id) => {
 
 const updateUser = async (id) => {
   try {
-    const response = await $fetch(`/api/user/editUser/${id}`, {
+    const response = await $fetch(`/api/user/${id}`, {
       method: 'PUT',
       body: editingUser.value,
       headers: {
@@ -183,13 +190,15 @@ const updateUser = async (id) => {
       },
     });
 
-    // Oppdater brukeren i den lokale listen
-    const index = users.value.body.findIndex((u) => u._id === id);
-    if (index !== -1) {
-      users.value.body[index] = response;
-    }
+    getAllUsers();
+
     closeModal(id);
     // Vis en suksessmelding her hvis ønskelig
+    useToastify(response.statusMessage, {
+      type: 'success',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
   } catch (error) {
     console.error('Error updating user:', error);
     // Vis en feilmelding her hvis ønskelig
@@ -205,5 +214,9 @@ const editingUser = ref({
 // Watch the searchQuery and reset currentPage to 1 when it changes
 watch(searchQuery, () => {
   currentPage.value = 1;
+});
+
+onMounted(() => {
+  getAllUsers();
 });
 </script>
