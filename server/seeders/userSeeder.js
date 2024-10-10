@@ -1,8 +1,5 @@
 import mongoose from 'mongoose';
 import User from '../models/userModel.js'; // Adjust the path as necessary
-// import dotenv from 'dotenv';
-
-// dotenv.config();
 
 const seedUsers = async () => {
   try {
