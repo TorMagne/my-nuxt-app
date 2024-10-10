@@ -10,15 +10,18 @@ export default defineEventHandler(async (event) => {
       const user = await User.findOne({ userNumber });
 
       if (!user) {
-        return {
-          status: 404,
-          body: { message: 'User does not exsist' },
-        };
+        return sendError(
+          event,
+          createError({
+            statusCode: 404,
+            statusMessage: 'User does not exist',
+          })
+        );
       }
 
       if (!user.password) {
         return {
-          status: 200,
+          statusCode: 200,
           body: {
             message: 'User found, but password needs to be set',
             needsPassword: true,
@@ -28,30 +31,49 @@ export default defineEventHandler(async (event) => {
       }
 
       return {
-        status: 200,
+        statusCode: 200,
         body: { needsPassword: false, needsLogin: true },
       };
     } catch (error) {
-      return {
-        status: 500,
-        body: { message: 'Error processing user number', error },
-      };
+      return sendError(
+        event,
+        createError({
+          statusCode: 500,
+          statusMessage: 'Error processing user number',
+          data: error.message,
+        })
+      );
     }
   }
 
   if (event.node.req.method === 'GET') {
-    // Apply JWT verification middleware
-    await verifyJwt(event);
-    // get all users
-    const users = await User.find().lean(); // Use .lean() to get plain objects
-    return {
-      status: 200,
-      body: users,
-    };
+    try {
+      // Apply JWT verification middleware
+      await verifyJwt(event);
+
+      // Get all users
+      const users = await User.find().lean(); // Use .lean() to get plain objects
+      return {
+        statusCode: 200,
+        body: users,
+      };
+    } catch (error) {
+      return sendError(
+        event,
+        createError({
+          statusCode: 500,
+          statusMessage: 'An error occurred while fetching the users',
+          data: error.message,
+        })
+      );
+    }
   }
 
-  return {
-    status: 405,
-    body: { message: 'Method Not Allowed' },
-  };
+  return sendError(
+    event,
+    createError({
+      statusCode: 405,
+      statusMessage: 'Method Not Allowed',
+    })
+  );
 });

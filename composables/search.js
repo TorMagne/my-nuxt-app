@@ -1,6 +1,8 @@
 export const useSearch = (payloads, searchInfo) => {
   const searchQuery = ref('');
 
+  console.log('payloads:', payloads);
+
   const filteredPayloads = computed(() => {
     if (!searchQuery.value) {
       return payloads.value;
@@ -14,8 +16,6 @@ export const useSearch = (payloads, searchInfo) => {
       );
     }
     if (searchInfo === 'books') {
-      console.log(payloads.value);
-
       return payloads.value.filter(
         (payload) =>
           payload.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
@@ -26,7 +26,8 @@ export const useSearch = (payloads, searchInfo) => {
       return payloads.value.filter(
         (payload) =>
           payload.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          payload.description.toLowerCase().includes(searchQuery.value.toLowerCase())
+          payload.description.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          payload.book.name.toLowerCase().includes(searchQuery.value.toLowerCase())
       );
     }
   });

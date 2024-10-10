@@ -8,7 +8,10 @@ export default defineEventHandler(async (event) => {
   if (event.node.req.method === 'GET') {
     try {
       const books = await Book.find().lean();
-      return books;
+      return {
+        statusCode: 200,
+        body: books,
+      };
     } catch (error) {
       return sendError(
         event,

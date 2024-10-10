@@ -211,6 +211,7 @@ const bookToDelete = ref(null);
 
 //search composable
 const { searchQuery, filteredPayloads } = useSearch(books, 'books');
+const { fetchData } = useFetchData();
 
 const handleFileUpload = (event) => {
   selectedFile.value = event.target.files[0];
@@ -225,22 +226,7 @@ const closeModal = () => {
 };
 
 const fetchBooks = async () => {
-  try {
-    const result = await $fetch('/api/book/getBooks', {
-      headers: {
-        Authorization: `Bearer ${AuthStore.user.token}`,
-      },
-    });
-
-    books.value = result;
-  } catch (error) {
-    console.error('Error fetching books:', error);
-    useToastify(error.statusMessage, {
-      type: 'error',
-      autoClose: 3000,
-      position: ToastifyOption.POSITION.TOP_RIGHT,
-    });
-  }
+  fetchData('/api/book/getBooks', books);
 };
 
 const submitForm = async () => {

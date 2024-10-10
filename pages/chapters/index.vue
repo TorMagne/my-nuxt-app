@@ -236,6 +236,9 @@ const editForm = ref({
 
 const chapterToDelete = ref(null);
 
+//composables
+const { fetchData } = useFetchData();
+
 //search composable
 const { searchQuery, filteredPayloads } = useSearch(chapters, 'chapters');
 
@@ -248,40 +251,11 @@ const closeModal = () => {
 };
 
 const fetchChapters = async () => {
-  try {
-    const result = await $fetch('/api/chapter/getChapters', {
-      headers: {
-        Authorization: `Bearer ${AuthStore.user.token}`,
-      },
-    });
-
-    chapters.value = result.body;
-  } catch (error) {
-    console.error('Error fetching chapters:', error);
-    useToastify(error.statusMessage, {
-      type: 'error',
-      autoClose: 3000,
-      position: ToastifyOption.POSITION.TOP_RIGHT,
-    });
-  }
+  fetchData('/api/chapter/getChapters', chapters);
 };
 
 const fetchBooks = async () => {
-  try {
-    const result = await $fetch('/api/book/getBooks', {
-      headers: {
-        Authorization: `Bearer ${AuthStore.user.token}`,
-      },
-    });
-    books.value = result;
-  } catch (error) {
-    console.error('Error fetching books:', error);
-    useToastify('Failed to fetch books', {
-      type: 'error',
-      autoClose: 3000,
-      position: ToastifyOption.POSITION.TOP_RIGHT,
-    });
-  }
+  fetchData('/api/book/getBooks', books);
 };
 
 const submitForm = async () => {

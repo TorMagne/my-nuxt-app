@@ -117,25 +117,12 @@ const currentPage = ref(1);
 const itemsPerPage = 10;
 const users = ref([]);
 
-//search composable
+//composables
 const { searchQuery, filteredPayloads } = useSearch(users, 'users');
+const { fetchData } = useFetchData();
 
 const getAllUsers = async () => {
-  try {
-    const response = await $fetch('/api/user/users', {
-      headers: {
-        Authorization: `Bearer ${AuthStore.user.token}`,
-      },
-    });
-
-    users.value = response.body;
-  } catch (error) {
-    useToastify(error.statusMessage, {
-      type: 'error',
-      autoClose: 3000,
-      position: ToastifyOption.POSITION.TOP_RIGHT,
-    });
-  }
+  fetchData('/api/user/users', users);
 };
 
 const paginatedUsers = computed(() => {
