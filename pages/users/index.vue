@@ -116,6 +116,11 @@ const errorInfo = ref(null);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const users = ref([]);
+const editingUser = ref({
+  userNumber: '',
+  role: '',
+  group: '',
+});
 
 //composables
 const { searchQuery, filteredPayloads } = useSearch(users, 'users');
@@ -180,15 +185,13 @@ const updateUser = async (id) => {
     });
   } catch (error) {
     console.error('Error updating user:', error);
-    // Vis en feilmelding her hvis ønskelig
+    useToastify('An error occurred while updating user', {
+      type: 'error',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
   }
 };
-
-const editingUser = ref({
-  userNumber: '',
-  role: '',
-  group: '',
-});
 
 // Watch the searchQuery and reset currentPage to 1 when it changes
 watch(searchQuery, () => {
