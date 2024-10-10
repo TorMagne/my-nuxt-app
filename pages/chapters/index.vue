@@ -363,7 +363,7 @@ const updateChapter = async () => {
   }
 
   try {
-    const { message, chapter } = await $fetch(`/api/chapter/${editForm.value._id}`, {
+    const { message } = await $fetch(`/api/chapter/${editForm.value._id}`, {
       method: 'PUT',
       body: editForm.value,
       headers: {

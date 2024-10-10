@@ -329,7 +329,7 @@ const updateBook = async () => {
   }
 
   try {
-    const { message, book } = await $fetch(`/api/book/${editForm.value._id}`, {
+    const { message } = await $fetch(`/api/book/${editForm.value._id}`, {
       method: 'PUT',
       body: formData,
       headers: {
@@ -343,10 +343,7 @@ const updateBook = async () => {
       position: ToastifyOption.POSITION.TOP_RIGHT,
     });
 
-    const index = books.value.findIndex((b) => b._id === book._id);
-    if (index !== -1) {
-      books.value[index] = book;
-    }
+    fetchBooks();
 
     closeEditModal();
   } catch (error) {
