@@ -118,7 +118,7 @@ const itemsPerPage = 10;
 const users = ref([]);
 
 //search composable
-const { searchQuery, filteredPayloads } = search(users, 'users');
+const { searchQuery, filteredPayloads } = useSearch(users, 'users');
 
 const getAllUsers = async () => {
   try {
@@ -127,9 +127,8 @@ const getAllUsers = async () => {
         Authorization: `Bearer ${AuthStore.user.token}`,
       },
     });
-    users.value = response.body;
 
-    console.log('Users => ', response);
+    users.value = response.body;
   } catch (error) {
     useToastify(error.statusMessage, {
       type: 'error',

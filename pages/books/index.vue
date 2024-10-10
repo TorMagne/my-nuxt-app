@@ -210,7 +210,7 @@ const deleteConfirmModal = ref(null);
 const bookToDelete = ref(null);
 
 //search composable
-const { searchQuery, filteredPayloads } = search(books, 'books');
+const { searchQuery, filteredPayloads } = useSearch(books, 'books');
 
 const handleFileUpload = (event) => {
   selectedFile.value = event.target.files[0];
@@ -235,6 +235,11 @@ const fetchBooks = async () => {
     books.value = result;
   } catch (error) {
     console.error('Error fetching books:', error);
+    useToastify(error.statusMessage, {
+      type: 'error',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
   }
 };
 

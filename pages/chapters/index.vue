@@ -237,7 +237,7 @@ const editForm = ref({
 const chapterToDelete = ref(null);
 
 //search composable
-const { searchQuery, filteredPayloads } = search(chapters, 'chapters');
+const { searchQuery, filteredPayloads } = useSearch(chapters, 'chapters');
 
 const openModal = () => {
   modal.value.showModal();
@@ -254,16 +254,15 @@ const fetchChapters = async () => {
         Authorization: `Bearer ${AuthStore.user.token}`,
       },
     });
+
     chapters.value = result.body;
-    console.log(result);
   } catch (error) {
     console.error('Error fetching chapters:', error);
-    useToastify('Failed to fetch chapters', {
+    useToastify(error.statusMessage, {
       type: 'error',
       autoClose: 3000,
       position: ToastifyOption.POSITION.TOP_RIGHT,
     });
-    chapters.value = [];
   }
 };
 

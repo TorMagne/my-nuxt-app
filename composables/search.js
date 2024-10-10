@@ -1,4 +1,4 @@
-export const search = (payloads, searchInfo) => {
+export const useSearch = (payloads, searchInfo) => {
   const searchQuery = ref('');
 
   const filteredPayloads = computed(() => {
@@ -14,11 +14,12 @@ export const search = (payloads, searchInfo) => {
       );
     }
     if (searchInfo === 'books') {
+      console.log(payloads.value);
+
       return payloads.value.filter(
         (payload) =>
           payload.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          payload.description.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          payload.book.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+          payload.description.toLowerCase().includes(searchQuery.value.toLowerCase())
       );
     }
     if (searchInfo === 'chapters') {
