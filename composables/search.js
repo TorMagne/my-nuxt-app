@@ -1,8 +1,6 @@
 export const useSearch = (payloads, searchInfo) => {
   const searchQuery = ref('');
 
-  console.log('payloads:', payloads);
-
   const filteredPayloads = computed(() => {
     if (!searchQuery.value) {
       return payloads.value;
