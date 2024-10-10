@@ -115,8 +115,10 @@ const AuthStore = useAuthStore();
 const errorInfo = ref(null);
 const currentPage = ref(1);
 const itemsPerPage = 10;
-const searchQuery = ref('');
 const users = ref([]);
+
+//search composable
+const { searchQuery, filteredPayloads } = search(users, 'users');
 
 const getAllUsers = async () => {
   try {
@@ -137,25 +139,14 @@ const getAllUsers = async () => {
   }
 };
 
-const filteredUsers = computed(() => {
-  if (!searchQuery.value) {
-    return users.value;
-  }
-  return users.value.filter(
-    (user) =>
-      user.userNumber.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      user.role.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
-});
-
 const paginatedUsers = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  return filteredUsers.value.slice(start, end);
+  return filteredPayloads.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
-  return Math.ceil(filteredUsers.value.length / itemsPerPage);
+  return Math.ceil(filteredPayloads.value.length / itemsPerPage);
 });
 
 const prevPage = () => {

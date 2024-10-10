@@ -218,7 +218,6 @@ const form = ref({
 
 const currentPage = ref(1);
 const itemsPerPage = 10;
-const searchQuery = ref('');
 
 const modal = ref(null);
 const editModal = ref(null);
@@ -236,6 +235,9 @@ const editForm = ref({
 });
 
 const chapterToDelete = ref(null);
+
+//search composable
+const { searchQuery, filteredPayloads } = search(chapters, 'chapters');
 
 const openModal = () => {
   modal.value.showModal();
@@ -330,25 +332,14 @@ const submitForm = async () => {
   }
 };
 
-const filteredChapters = computed(() => {
-  if (!searchQuery.value) {
-    return chapters.value;
-  }
-  return chapters.value.filter(
-    (chapter) =>
-      chapter.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      chapter.description.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
-});
-
 const paginatedChapters = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  return filteredChapters.value.slice(start, end);
+  return filteredPayloads.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
-  return Math.ceil(filteredChapters.value.length / itemsPerPage);
+  return Math.ceil(filteredPayloads.value.length / itemsPerPage);
 });
 
 const prevPage = () => {

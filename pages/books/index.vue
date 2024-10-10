@@ -193,7 +193,6 @@ const form = ref({
 
 const currentPage = ref(1);
 const itemsPerPage = 10;
-const searchQuery = ref('');
 
 const selectedFile = ref(null);
 const modal = ref(null);
@@ -209,6 +208,9 @@ const editSelectedFile = ref(null);
 
 const deleteConfirmModal = ref(null);
 const bookToDelete = ref(null);
+
+//search composable
+const { searchQuery, filteredPayloads } = search(books, 'books');
 
 const handleFileUpload = (event) => {
   selectedFile.value = event.target.files[0];
@@ -283,25 +285,14 @@ const submitForm = async () => {
   }
 };
 
-const filteredBooks = computed(() => {
-  if (!searchQuery.value) {
-    return books.value;
-  }
-  return books.value.filter(
-    (book) =>
-      book.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      book.description.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
-});
-
 const paginatedBooks = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  return filteredBooks.value.slice(start, end);
+  return filteredPayloads.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
-  return Math.ceil(filteredBooks.value.length / itemsPerPage);
+  return Math.ceil(filteredPayloads.value.length / itemsPerPage);
 });
 
 const prevPage = () => {
