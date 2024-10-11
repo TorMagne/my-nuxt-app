@@ -26,7 +26,9 @@
         <form @submit.prevent="submitForm" enctype="multipart/form-data">
           <label class="form-control w-full max-w-xs mb-4">
             <div class="label">
-              <span class="label-text">Task Name</span>
+              <span class="label-text after:content-['*'] after:ml-0.5 after:text-red-500"
+                >Task Name</span
+              >
             </div>
             <input
               placeholder="Task name"

@@ -26,7 +26,9 @@
         <form @submit.prevent="submitForm">
           <label class="form-control w-full max-w-xs mb-4">
             <div class="label">
-              <span class="label-text">Select book</span>
+              <span class="label-text after:content-['*'] after:ml-0.5 after:text-red-500"
+                >Select book</span
+              >
             </div>
             <select class="select select-bordered" v-model="form.book" required>
               <option disabled value="">Select a book</option>
@@ -38,7 +40,9 @@
 
           <label class="form-control w-full max-w-xs mb-4">
             <div class="label">
-              <span class="label-text">Chapter Name</span>
+              <span class="label-text after:content-['*'] after:ml-0.5 after:text-red-500"
+                >Chapter Name</span
+              >
             </div>
             <input
               placeholder="Chapter name"
