@@ -13,7 +13,8 @@ export const useSearch = (payloads, searchInfo) => {
           payload.group.toLowerCase().includes(searchQuery.value.toLowerCase())
       );
     }
-    if (searchInfo === 'books') {
+    // this one prob need to change later
+    if (searchInfo === 'books' || searchInfo === 'taskTypes') {
       return payloads.value.filter(
         (payload) =>
           payload.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||

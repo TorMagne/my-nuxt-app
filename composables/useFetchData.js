@@ -11,6 +11,8 @@ export const useFetchData = () => {
         },
       });
 
+      console.log('Data fetched:', result.body);
+
       targetRef.value = result.body;
     } catch (error) {
       console.error('Error fetching data:', error);

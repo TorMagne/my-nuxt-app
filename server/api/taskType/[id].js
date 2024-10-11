@@ -1,4 +1,4 @@
-import Chapter from '~/server/models/chapterModel';
+import TaskType from '~/server/models/taskTypeModel';
 import verifyJwt from '~/server/utils/verifyJwt';
 
 export default defineEventHandler(async (event) => {
@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
   if (event.node.req.method === 'PUT') {
     try {
       const body = await readBody(event);
-      const { book, name, level, description } = body;
+      const { name, description } = body;
 
       if (!name) {
         return sendError(
@@ -21,56 +21,56 @@ export default defineEventHandler(async (event) => {
         );
       }
 
-      const updatedChapter = await Chapter.findByIdAndUpdate(
+      const updatedTaskType = await TaskType.findByIdAndUpdate(
         id,
-        { book, name, level, description },
+        { name, description },
         { new: true, runValidators: true }
       );
 
-      if (!updatedChapter) {
+      if (!updatedTaskType) {
         throw createError({
           statusCode: 404,
-          statusMessage: 'Chapter not found',
+          statusMessage: 'Task type not found',
         });
       }
 
       return {
-        message: 'Chapter updated successfully',
-        chapter: updatedChapter,
+        message: 'Task type updated successfully',
+        taskType: updatedTaskType,
       };
     } catch (error) {
-      console.error('Error updating chapter:', error);
+      console.error('Error updating task type:', error);
       return sendError(
         event,
         createError({
           statusCode: 500,
-          statusMessage: 'An error occurred while updating the chapter',
+          statusMessage: 'An error occurred while updating the task type',
           data: error.message,
         })
       );
     }
   } else if (event.node.req.method === 'DELETE') {
     try {
-      const deletedChapter = await Chapter.findByIdAndDelete(id);
+      const deletedTaskType = await TaskType.findByIdAndDelete(id);
 
-      if (!deletedChapter) {
+      if (!deletedTaskType) {
         throw createError({
           statusCode: 404,
-          statusMessage: 'Chapter not found',
+          statusMessage: 'Task type not found',
         });
       }
 
       return {
-        message: 'Chapter deleted successfully',
-        chapter: deletedChapter,
+        message: 'Task type deleted successfully',
+        taskType: deletedTaskType,
       };
     } catch (error) {
-      console.error('Error deleting chapter:', error);
+      console.error('Error deleting task type:', error);
       return sendError(
         event,
         createError({
           statusCode: 500,
-          statusMessage: 'An error occurred while deleting the chapter',
+          statusMessage: 'An error occurred while deleting the task type',
           data: error.message,
         })
       );

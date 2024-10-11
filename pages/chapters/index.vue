@@ -18,6 +18,7 @@
       </svg>
     </label>
 
+    <!-- create -->
     <button class="btn btn-success mb-4" @click="openModal">Create Chapter</button>
     <dialog id="my_modal_1" class="modal" ref="modal">
       <div class="modal-box">
@@ -209,13 +210,6 @@ import { useAuthStore } from '~/stores/auth/AuthStore';
 
 const AuthStore = useAuthStore();
 
-const form = ref({
-  book: '',
-  name: '',
-  level: '',
-  description: '',
-});
-
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
@@ -226,6 +220,15 @@ const deleteConfirmModal = ref(null);
 const chapters = ref([]);
 const books = ref([]);
 
+const chapterToDelete = ref(null);
+
+const form = ref({
+  book: '',
+  name: '',
+  level: '',
+  description: '',
+});
+
 const editForm = ref({
   _id: '',
   book: '',
@@ -234,12 +237,8 @@ const editForm = ref({
   description: '',
 });
 
-const chapterToDelete = ref(null);
-
 //composables
 const { fetchData } = useFetchData();
-
-//search composable
 const { searchQuery, filteredPayloads } = useSearch(chapters, 'chapters');
 
 const openModal = () => {
@@ -305,6 +304,44 @@ const submitForm = async () => {
   }
 };
 
+const updateChapter = async () => {
+  if (!editForm.value.book || !editForm.value.name) {
+    useToastify('Please fill in all required fields.', {
+      type: 'error',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
+    return;
+  }
+
+  try {
+    const { message } = await $fetch(`/api/chapter/${editForm.value._id}`, {
+      method: 'PUT',
+      body: editForm.value,
+      headers: {
+        Authorization: `Bearer ${AuthStore.user.token}`,
+      },
+    });
+
+    useToastify(message, {
+      type: 'success',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
+
+    fetchChapters();
+
+    closeEditModal();
+  } catch (error) {
+    useToastify('An error occurred while updating the chapter', {
+      type: 'error',
+      autoClose: 3000,
+      position: ToastifyOption.POSITION.TOP_RIGHT,
+    });
+    console.error(error);
+  }
+};
+
 const paginatedChapters = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
@@ -352,44 +389,6 @@ const closeEditModal = () => {
   editModal.value.close();
 };
 
-const updateChapter = async () => {
-  if (!editForm.value.book || !editForm.value.name) {
-    useToastify('Please fill in all required fields.', {
-      type: 'error',
-      autoClose: 3000,
-      position: ToastifyOption.POSITION.TOP_RIGHT,
-    });
-    return;
-  }
-
-  try {
-    const { message } = await $fetch(`/api/chapter/${editForm.value._id}`, {
-      method: 'PUT',
-      body: editForm.value,
-      headers: {
-        Authorization: `Bearer ${AuthStore.user.token}`,
-      },
-    });
-
-    useToastify(message, {
-      type: 'success',
-      autoClose: 3000,
-      position: ToastifyOption.POSITION.TOP_RIGHT,
-    });
-
-    fetchChapters();
-
-    closeEditModal();
-  } catch (error) {
-    useToastify('An error occurred while updating the chapter', {
-      type: 'error',
-      autoClose: 3000,
-      position: ToastifyOption.POSITION.TOP_RIGHT,
-    });
-    console.error(error);
-  }
-};
-
 const confirmDelete = (chapter) => {
   chapterToDelete.value = chapter;
   deleteConfirmModal.value.showModal();
@@ -417,7 +416,7 @@ const deleteChapter = async () => {
       position: ToastifyOption.POSITION.TOP_RIGHT,
     });
 
-    chapters.value = chapters.value.filter((c) => c._id !== chapterToDelete.value._id);
+    fetchChapters();
 
     closeDeleteConfirmModal();
   } catch (error) {
