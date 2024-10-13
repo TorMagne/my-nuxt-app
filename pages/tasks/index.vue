@@ -126,7 +126,7 @@
         <table class="table">
           <thead>
             <tr>
-              <th class="text-black">Book Name</th>
+              <th class="text-black">Task Name</th>
               <th class="text-black">Description</th>
               <th class="text-black">level</th>
               <th class="text-black">Chapter</th>
@@ -207,6 +207,7 @@
               class="input input-bordered w-full max-w-xs"
               type="text"
               v-model="editForm.level"
+              required
             />
           </label>
 
@@ -292,7 +293,6 @@ const itemsPerPage = 10;
 
 const selectedFile = ref(null);
 const modal = ref(null);
-const books = ref([]);
 const tasks = ref([]);
 const chapters = ref([]);
 const taskTypes = ref([]);
@@ -434,7 +434,7 @@ const handleEditFileUpload = (event) => {
 };
 
 const updateTask = async () => {
-  if (!editForm.value.name || !editForm.value.description) {
+  if (!editForm.value.name || !editForm.value.level) {
     useToastify('Please fill in all required fields.', {
       type: 'error',
       autoClose: 3000,

@@ -34,7 +34,8 @@ export const useSearch = (payloads, searchInfo) => {
         (payload) =>
           payload.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
           payload.description.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          payload.chapter.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+          payload.chapter.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          payload.taskType.name.toLowerCase().includes(searchQuery.value.toLowerCase())
       );
     }
   });
