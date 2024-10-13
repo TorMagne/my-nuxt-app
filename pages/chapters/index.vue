@@ -54,19 +54,6 @@
             />
           </label>
 
-          <label class="form-control w-full max-w-xs mb-4">
-            <div class="label">
-              <span class="label-text">Level</span>
-            </div>
-            <input
-              placeholder="Level"
-              class="input input-bordered w-full max-w-xs"
-              type="text"
-              id="level"
-              v-model="form.level"
-            />
-          </label>
-
           <label class="form-control mb-4">
             <div class="label">
               <span class="label-text">Description</span>
@@ -95,7 +82,6 @@
             <tr>
               <th class="text-black">Book</th>
               <th class="text-black">Chapter Name</th>
-              <th class="text-black">Level</th>
               <th class="text-black">Description</th>
               <th class="text-black">Actions</th>
             </tr>
@@ -105,7 +91,6 @@
               <td class="text-black">{{ getBookName(chapter.book) }}</td>
               <!-- <pre>{{ chapter.book }}</pre> -->
               <td class="text-black">{{ chapter.name }}</td>
-              <td class="text-black">{{ chapter.level }}</td>
               <td class="text-black">{{ chapter.description }}</td>
               <td>
                 <button class="btn btn-info btn-sm mr-2" @click="openEditModal(chapter)">
@@ -158,18 +143,6 @@
               class="input input-bordered w-full max-w-xs"
               type="text"
               v-model="editForm.name"
-            />
-          </label>
-
-          <label class="form-control w-full max-w-xs mb-4">
-            <div class="label">
-              <span class="label-text">Level</span>
-            </div>
-            <input
-              placeholder="Level"
-              class="input input-bordered w-full max-w-xs"
-              type="text"
-              v-model="editForm.level"
             />
           </label>
 
@@ -228,7 +201,6 @@ const chapterToDelete = ref(null);
 const form = ref({
   book: '',
   name: '',
-  level: '',
   description: '',
 });
 
@@ -236,7 +208,6 @@ const editForm = ref({
   _id: '',
   book: '',
   name: '',
-  level: '',
   description: '',
 });
 
@@ -275,7 +246,6 @@ const submitForm = async () => {
   const formData = {
     book: form.value.book,
     name: form.value.name,
-    level: form.value.level,
     description: form.value.description,
   };
 
@@ -294,7 +264,7 @@ const submitForm = async () => {
       position: ToastifyOption.POSITION.TOP_RIGHT,
     });
 
-    form.value = { book: '', name: '', level: '', description: '' };
+    form.value = { book: '', name: '', description: '' };
     closeModal();
     fetchChapters();
   } catch (error) {

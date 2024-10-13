@@ -22,7 +22,6 @@ export default defineEventHandler(async (event) => {
       const newChapter = new Chapter({
         book: body.book,
         name: body.name,
-        level: body.level,
         description: body.description,
       });
 

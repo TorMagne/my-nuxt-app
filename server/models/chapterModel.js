@@ -11,9 +11,6 @@ const chapterSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    level: {
-      type: Number,
-    },
     description: {
       type: String,
     },

@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
   if (event.node.req.method === 'PUT') {
     try {
       const body = await readBody(event);
-      const { book, name, level, description } = body;
+      const { book, name, description } = body;
 
       if (!name) {
         return sendError(
@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
 
       const updatedChapter = await Chapter.findByIdAndUpdate(
         id,
-        { book, name, level, description },
+        { book, name, description },
         { new: true, runValidators: true }
       );
 
