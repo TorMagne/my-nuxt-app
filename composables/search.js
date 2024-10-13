@@ -6,11 +6,13 @@ export const useSearch = (payloads, searchInfo) => {
       return payloads.value;
     }
     if (searchInfo === 'users') {
+      console.log('searching users', payloads);
+
       return payloads.value.filter(
         (payload) =>
-          payload.userNumber.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          payload.role.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          payload.group.toLowerCase().includes(searchQuery.value.toLowerCase())
+          payload.userNumber?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          payload.role?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          payload.group?.toLowerCase().includes(searchQuery.value.toLowerCase())
       );
     }
     // this one prob need to change later
