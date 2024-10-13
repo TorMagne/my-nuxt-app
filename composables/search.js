@@ -29,6 +29,14 @@ export const useSearch = (payloads, searchInfo) => {
           payload.book.name.toLowerCase().includes(searchQuery.value.toLowerCase())
       );
     }
+    if (searchInfo === 'tasks') {
+      return payloads.value.filter(
+        (payload) =>
+          payload.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          payload.description.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          payload.chapter.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      );
+    }
   });
 
   return { searchQuery, filteredPayloads };

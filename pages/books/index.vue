@@ -35,7 +35,6 @@
               type="text"
               id="name"
               v-model="form.name"
-              required
             />
           </label>
 
@@ -48,7 +47,6 @@
               placeholder="Book description"
               id="description"
               v-model="form.description"
-              required
             ></textarea>
           </label>
 
@@ -232,7 +230,7 @@ const fetchBooks = async () => {
 };
 
 const submitForm = async () => {
-  if (!form.value.name || !form.value.description) {
+  if (!form.value.name) {
     useToastify('Please fill in all required fields.', {
       type: 'error',
       autoClose: 3000,

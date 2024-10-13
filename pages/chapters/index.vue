@@ -141,7 +141,7 @@
             <div class="label">
               <span class="label-text">Select book</span>
             </div>
-            <select class="select select-bordered" v-model="editForm.book" required>
+            <select class="select select-bordered" v-model="editForm.book">
               <option disabled value="">Select a book</option>
               <option v-for="book in books" :key="book._id" :value="book._id">
                 {{ book.name }}
@@ -158,7 +158,6 @@
               class="input input-bordered w-full max-w-xs"
               type="text"
               v-model="editForm.name"
-              required
             />
           </label>
 

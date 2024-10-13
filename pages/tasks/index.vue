@@ -18,6 +18,7 @@
       </svg>
     </label>
 
+    <!-- create task -->
     <button class="btn btn-success mb-4" @click="openModal">Create task</button>
     <dialog id="my_modal_1" class="modal" ref="modal">
       <div class="modal-box">
@@ -119,7 +120,7 @@
       </div>
     </dialog>
 
-    <h2 class="font-bold my-4 text-2xl" v-if="books.length === 0">No books created yet</h2>
+    <h2 class="font-bold my-4 text-2xl" v-if="tasks.length === 0">No tasks created yet</h2>
     <div v-else>
       <div class="overflow-x-auto">
         <table class="table">
@@ -127,20 +128,23 @@
             <tr>
               <th class="text-black">Book Name</th>
               <th class="text-black">Description</th>
-              <th class="text-black">Image</th>
-              <th class="text-black">Actions</th>
+              <th class="text-black">level</th>
+              <th class="text-black">Chapter</th>
+              <th class="text-black">Task type</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="book in paginatedBooks" :key="book._id">
-              <td class="text-black">{{ book.name }}</td>
-              <td class="text-black">{{ book.description }}</td>
+            <tr v-for="task in paginatedTaskTypes" :key="task._id">
+              <td class="text-black">{{ task.name }}</td>
+              <td class="text-black">{{ task.description }}</td>
               <td>
-                <img :src="`${book.image}`" width="50" alt="Book cover" />
+                <img :src="`${task.image}`" width="50" alt="Book cover" />
               </td>
+              <td class="text-black">{{ task.chapter.name }}</td>
+              <td class="text-black">{{ task.taskType.name }}</td>
               <td>
-                <button class="btn btn-info btn-sm mr-2" @click="openEditModal(book)">Edit</button>
-                <button class="btn btn-error btn-sm" @click="confirmDelete(book)">Delete</button>
+                <button class="btn btn-info btn-sm mr-2" @click="openEditModal(task)">Edit</button>
+                <button class="btn btn-error btn-sm" @click="confirmDelete(task)">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -161,17 +165,18 @@
       </div>
     </div>
 
-    <!-- Edit Book Modal -->
+    <!-- Edit Task Modal -->
     <dialog id="edit_modal" class="modal" ref="editModal">
       <div class="modal-box">
-        <h3 class="text-lg font-bold">Edit Book</h3>
-        <form @submit.prevent="updateBook" enctype="multipart/form-data">
+        <h3 class="text-lg font-bold">Edit Task</h3>
+        <form @submit.prevent="updateTask" enctype="multipart/form-data">
+          <!-- name -->
           <label class="form-control w-full max-w-xs mb-4">
             <div class="label">
-              <span class="label-text">Book Name</span>
+              <span class="label-text">Task Name</span>
             </div>
             <input
-              placeholder="Book name"
+              placeholder="Task name"
               class="input input-bordered w-full max-w-xs"
               type="text"
               v-model="editForm.name"
@@ -179,21 +184,61 @@
             />
           </label>
 
+          <!-- description -->
           <label class="form-control mb-4">
             <div class="label">
-              <span class="label-text">Book Description</span>
+              <span class="label-text">Task Description</span>
             </div>
             <textarea
               class="textarea textarea-bordered h-24"
               placeholder="Book description"
               v-model="editForm.description"
-              required
             ></textarea>
           </label>
 
+          <!-- level -->
           <label class="form-control w-full max-w-xs mb-4">
             <div class="label">
-              <span class="label-text">Book Image</span>
+              <span class="label-text">Task Level</span>
+            </div>
+            <input
+              placeholder="Book level"
+              class="input input-bordered w-full max-w-xs"
+              type="text"
+              v-model="editForm.level"
+            />
+          </label>
+
+          <!-- chapter -->
+          <label class="form-control w-full max-w-xs mb-4">
+            <div class="label">
+              <span class="label-text">Select chapter</span>
+            </div>
+            <select class="select select-bordered" v-model="editForm.chapter">
+              <option disabled value="">Select a chapter</option>
+              <option v-for="chapter in chapters" :key="chapter._id" :value="chapter._id">
+                {{ chapter.name }}
+              </option>
+            </select>
+          </label>
+
+          <!-- task type -->
+          <label class="form-control w-full max-w-xs mb-4">
+            <div class="label">
+              <span class="label-text">Select task type</span>
+            </div>
+            <select class="select select-bordered" v-model="editForm.taskType">
+              <option disabled value="">Select a chapter</option>
+              <option v-for="task in taskTypes" :key="task._id" :value="task._id">
+                {{ task.name }}
+              </option>
+            </select>
+          </label>
+
+          <!-- image -->
+          <label class="form-control w-full max-w-xs mb-4">
+            <div class="label">
+              <span class="label-text">Task Image</span>
             </div>
             <input
               type="file"
@@ -218,9 +263,9 @@
     <dialog id="delete_confirm_modal" class="modal" ref="deleteConfirmModal">
       <div class="modal-box">
         <h3 class="font-bold text-lg">Confirm Deletion</h3>
-        <p class="py-4">Are you sure you want to delete this book?</p>
+        <p class="py-4">Are you sure you want to delete this task?</p>
         <div class="modal-action">
-          <button class="btn btn-error" @click="deleteBook">Delete</button>
+          <button class="btn btn-error" @click="deleteTask">Delete</button>
           <button class="btn" @click="closeDeleteConfirmModal">Cancel</button>
         </div>
       </div>
@@ -255,15 +300,18 @@ const editForm = ref({
   _id: '',
   name: '',
   description: '',
+  level: '',
+  chapter: '',
+  taskType: '',
 });
 const editModal = ref(null);
 const editSelectedFile = ref(null);
 
 const deleteConfirmModal = ref(null);
-const bookToDelete = ref(null);
+const taskToDelete = ref(null);
 
 //search composable
-const { searchQuery, filteredPayloads } = useSearch(books, 'books');
+const { searchQuery, filteredPayloads } = useSearch(tasks, 'tasks');
 const { fetchData } = useFetchData();
 
 const handleFileUpload = (event) => {
@@ -279,7 +327,7 @@ const closeModal = () => {
 };
 
 const fetchTasks = async () => {
-  fetchData('/api/chapter/getChapters', tasks);
+  fetchData('/api/task/getTasks', tasks);
 };
 
 const fetchChapters = async () => {
@@ -332,7 +380,7 @@ const submitForm = async () => {
     document.getElementById('image').value = '';
 
     closeModal();
-    // fetchBooks();
+    fetchTasks();
   } catch (error) {
     useToastify('An error occurred', {
       type: 'error',
@@ -343,7 +391,7 @@ const submitForm = async () => {
   }
 };
 
-const paginatedBooks = computed(() => {
+const paginatedTaskTypes = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
   return filteredPayloads.value.slice(start, end);
@@ -365,8 +413,14 @@ const nextPage = () => {
   }
 };
 
-const openEditModal = (book) => {
-  editForm.value = { ...book };
+const openEditModal = (task) => {
+  console.log('Editing chapter:', task);
+
+  editForm.value = {
+    ...task,
+    chapter: task.chapter._id,
+    taskType: task.taskType._id,
+  };
   editModal.value.showModal();
 };
 
@@ -378,7 +432,7 @@ const handleEditFileUpload = (event) => {
   editSelectedFile.value = event.target.files[0];
 };
 
-const updateBook = async () => {
+const updateTask = async () => {
   if (!editForm.value.name || !editForm.value.description) {
     useToastify('Please fill in all required fields.', {
       type: 'error',
@@ -391,6 +445,10 @@ const updateBook = async () => {
   const formData = new FormData();
   formData.append('name', editForm.value.name);
   formData.append('description', editForm.value.description);
+  formData.append('level', editForm.value.level);
+  formData.append('chapter', editForm.value.chapter);
+  formData.append('taskType', editForm.value.taskType);
+
   if (editSelectedFile.value) {
     formData.append('image', editSelectedFile.value);
   }
@@ -410,7 +468,7 @@ const updateBook = async () => {
       position: ToastifyOption.POSITION.TOP_RIGHT,
     });
 
-    fetchBooks();
+    fetchTasks();
 
     closeEditModal();
   } catch (error) {
@@ -423,21 +481,21 @@ const updateBook = async () => {
   }
 };
 
-const confirmDelete = (book) => {
-  bookToDelete.value = book;
+const confirmDelete = (task) => {
+  taskToDelete.value = task;
   deleteConfirmModal.value.showModal();
 };
 
 const closeDeleteConfirmModal = () => {
   deleteConfirmModal.value.close();
-  bookToDelete.value = null;
+  taskToDelete.value = null;
 };
 
-const deleteBook = async () => {
-  if (!bookToDelete.value) return;
+const deleteTask = async () => {
+  if (!taskToDelete.value) return;
 
   try {
-    const { message } = await $fetch(`/api/book/${bookToDelete.value._id}`, {
+    const { message } = await $fetch(`/api/task/${taskToDelete.value._id}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${AuthStore.user.token}`,
@@ -450,7 +508,7 @@ const deleteBook = async () => {
       position: ToastifyOption.POSITION.TOP_RIGHT,
     });
 
-    books.value = books.value.filter((b) => b._id !== bookToDelete.value._id);
+    tasks.value = tasks.value.filter((b) => b._id !== taskToDelete.value._id);
 
     closeDeleteConfirmModal();
   } catch (error) {
@@ -468,6 +526,7 @@ watch(searchQuery, () => {
 });
 
 onMounted(() => {
+  fetchTasks();
   fetchChapters();
   fetchTaskType();
 });
