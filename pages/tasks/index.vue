@@ -137,11 +137,12 @@
             <tr v-for="task in paginatedTaskTypes" :key="task._id">
               <td class="text-black">{{ task.name }}</td>
               <td class="text-black">{{ task.description }}</td>
+              <td class="text-black">{{ task.level }}</td>
+              <td class="text-black">{{ task.chapter.name }}</td>
+              <td class="text-black">{{ task.taskType.name }}</td>
               <td>
                 <img :src="`${task.image}`" width="50" alt="Book cover" />
               </td>
-              <td class="text-black">{{ task.chapter.name }}</td>
-              <td class="text-black">{{ task.taskType.name }}</td>
               <td>
                 <button class="btn btn-info btn-sm mr-2" @click="openEditModal(task)">Edit</button>
                 <button class="btn btn-error btn-sm" @click="confirmDelete(task)">Delete</button>
@@ -250,7 +251,7 @@
           </label>
 
           <div class="flex justify-between mt-8">
-            <button type="submit" class="btn btn-success">Update Book</button>
+            <button type="submit" class="btn btn-success">Update Task</button>
             <button type="button" class="btn btn-warning ml-2" @click="closeEditModal">
               Cancel
             </button>
@@ -454,7 +455,7 @@ const updateTask = async () => {
   }
 
   try {
-    const { message } = await $fetch(`/api/book/${editForm.value._id}`, {
+    const { message } = await $fetch(`/api/task/${editForm.value._id}`, {
       method: 'PUT',
       body: formData,
       headers: {
