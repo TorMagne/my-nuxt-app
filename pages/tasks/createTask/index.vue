@@ -119,6 +119,9 @@
           <div class="bg-base-200 p-4 rounded-md">
             <span class="card-title">Order: {{ index + 1 }}</span>
             <span class="card-title">Name: {{ pixel.name }}</span>
+            <button class="btn btn-sm mt-2 btn-error" @click="removeInfoPixel(pixel._id)">
+              Remove
+            </button>
           </div>
         </li>
       </VueDraggableNext>
@@ -195,6 +198,18 @@ const addInfoPixel = (infopixel) => {
       position: ToastifyOption.POSITION.TOP_RIGHT,
     });
   }
+};
+
+const removeInfoPixel = (infopixelId) => {
+  infopixelsToAdd.value = infopixelsToAdd.value.filter(
+    (infopixel) => infopixel._id !== infopixelId
+  );
+
+  useToastify('Infopixel removed', {
+    type: 'warning',
+    autoClose: 3000,
+    position: ToastifyOption.POSITION.TOP_RIGHT,
+  });
 };
 
 const onDragEnd = () => {
