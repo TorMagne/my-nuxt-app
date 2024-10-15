@@ -40,6 +40,15 @@ export const useSearch = (payloads, searchInfo) => {
           payload.taskType.name.toLowerCase().includes(searchQuery.value.toLowerCase())
       );
     }
+    if (searchInfo === 'infopixels') {
+      return payloads.value.filter(
+        (payload) =>
+          payload.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          payload.medicalname.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          payload.description.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          payload.hint.toLowerCase().includes(searchQuery.value.toLowerCase())
+      );
+    }
   });
 
   return { searchQuery, filteredPayloads };
