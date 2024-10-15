@@ -203,35 +203,6 @@ const onDragEnd = () => {
   // updateInfopixelsOrder(infopixelsToAdd.value);
 };
 
-const updateInfopixelsOrder = async (newOrder) => {
-  try {
-    const response = await fetch('/api/update-infopixels-order', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ infopixels: newOrder }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to update infopixels order');
-    }
-
-    useToastify('Infopixels order updated successfully', {
-      type: 'success',
-      autoClose: 3000,
-      position: 'top-right',
-    });
-  } catch (error) {
-    console.error('Error updating infopixels order:', error);
-    useToastify('Error updating infopixels order', {
-      type: 'error',
-      autoClose: 3000,
-      position: 'top-right',
-    });
-  }
-};
-
 const submitForm = async () => {
   if (!form.value.name || !form.value.level) {
     useToastify('Please fill in all required fields.', {
