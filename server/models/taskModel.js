@@ -23,6 +23,12 @@ const taskSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'TaskType',
     },
+    infopixels: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Infopixel',
+      },
+    ],
   },
   { timestamps: true }
 );
