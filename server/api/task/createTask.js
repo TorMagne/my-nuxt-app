@@ -87,6 +87,12 @@ export default defineEventHandler(async (event) => {
         }
       }
 
+      // Parse infopixels field
+      let infopixels = [];
+      if (fields.infopixels) {
+        infopixels = JSON.parse(fields.infopixels);
+      }
+
       // Log fields after adjustment
       console.log('Fields after adjustment:', fields);
 
@@ -94,6 +100,7 @@ export default defineEventHandler(async (event) => {
       const newTask = new Task({
         ...fields,
         image: imagePath,
+        infopixels,
       });
 
       await newTask.save();

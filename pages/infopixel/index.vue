@@ -36,6 +36,7 @@
               type="text"
               id="name"
               v-model="form.name"
+              required
             />
           </label>
 
@@ -50,7 +51,6 @@
               type="text"
               id="name"
               v-model="form.medicalname"
-              required
             />
           </label>
 
@@ -268,7 +268,7 @@ const editModal = ref(null);
 const editSelectedFile = ref(null);
 
 const deleteConfirmModal = ref(null);
-const bookToDelete = ref(null);
+const infoPixelToDelete = ref(null);
 
 //search composable
 const { searchQuery, filteredPayloads } = useSearch(infopixels, 'infopixels');
@@ -424,20 +424,20 @@ const updateInfoPixel = async () => {
 };
 
 const confirmDelete = (infopixel) => {
-  bookToDelete.value = infopixel;
+  infoPixelToDelete.value = infopixel;
   deleteConfirmModal.value.showModal();
 };
 
 const closeDeleteConfirmModal = () => {
   deleteConfirmModal.value.close();
-  bookToDelete.value = null;
+  infoPixelToDelete.value = null;
 };
 
 const deleteInfoPixel = async () => {
-  if (!bookToDelete.value) return;
+  if (!infoPixelToDelete.value) return;
 
   try {
-    const { message } = await $fetch(`/api/infopixel/${bookToDelete.value._id}`, {
+    const { message } = await $fetch(`/api/infopixel/${infoPixelToDelete.value._id}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${AuthStore.user.token}`,

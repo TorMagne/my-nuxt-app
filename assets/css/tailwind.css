@@ -5,3 +5,7 @@
 .active-link {
   @apply bg-base-300 font-bold;
 }
+
+.active-extra-link {
+  @apply font-bold;
+}

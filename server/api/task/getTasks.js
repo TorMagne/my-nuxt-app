@@ -8,7 +8,10 @@ export default defineEventHandler(async (event) => {
   if (event.node.req.method === 'GET') {
     try {
       //
-      const tasks = await Task.find().populate('chapter').populate('taskType');
+      const tasks = await Task.find()
+        .populate('chapter')
+        .populate('taskType')
+        .populate('infopixels');
       return {
         statusCode: 200,
         body: tasks,
