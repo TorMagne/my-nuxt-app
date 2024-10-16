@@ -154,6 +154,7 @@
   </section>
 </template>
 <script setup>
+import DOMPurify from 'dompurify';
 import { useAuthStore } from '~/stores/auth/AuthStore';
 
 const AuthStore = useAuthStore();
@@ -352,7 +353,10 @@ const nextPage = () => {
   }
 };
 
-watch(searchQuery, () => {
+watch(searchQuery, (newValue) => {
+  // Sanitize the search query
+  searchQuery.value = DOMPurify.sanitize(newValue);
+  // Reset the current page to 1
   currentPage.value = 1;
 });
 

@@ -108,6 +108,7 @@
 </template>
 
 <script setup>
+import DOMPurify from 'dompurify';
 import { useAuthStore } from '~/stores/auth/AuthStore';
 
 const AuthStore = useAuthStore();
@@ -193,8 +194,10 @@ const updateUser = async (id) => {
   }
 };
 
-// Watch the searchQuery and reset currentPage to 1 when it changes
-watch(searchQuery, () => {
+watch(searchQuery, (newValue) => {
+  // Sanitize the search query
+  searchQuery.value = DOMPurify.sanitize(newValue);
+  // Reset the current page to 1
   currentPage.value = 1;
 });
 

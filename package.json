@@ -16,6 +16,7 @@
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@pinia/nuxt": "^0.5.5",
     "bcryptjs": "^2.4.3",
+    "dompurify": "^3.1.7",
     "formidable": "^3.5.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.0",
