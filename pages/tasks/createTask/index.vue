@@ -8,7 +8,7 @@
     </ul>
   </div>
 
-  <h3 class="text-lg font-bold">Create a new task</h3>
+  <h1 class="text-lg font-bold">Create a new task</h1>
   <form @submit.prevent="submitForm" enctype="multipart/form-data">
     <!-- name -->
     <label class="form-control w-full max-w-xs mb-4">
@@ -116,7 +116,7 @@
     <ul v-if="infopixelsToAdd.length > 0">
       <VueDraggableNext v-model="infopixelsToAdd" @end="onDragEnd">
         <li v-for="(pixel, index) in infopixelsToAdd" :key="pixel._id" class="mt-6">
-          <div class="bg-base-200 p-4 rounded-md">
+          <div class="bg-base-200 p-4 rounded-md cursor-pointer">
             <span class="card-title">Order: {{ index + 1 }}</span>
             <span class="card-title">Name: {{ pixel.name }}</span>
             <button class="btn btn-sm mt-2 btn-error" @click="removeInfoPixel(pixel._id)">

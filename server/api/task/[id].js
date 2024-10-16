@@ -10,7 +10,33 @@ export default defineEventHandler(async (event) => {
 
   const id = event.context.params.id;
 
-  if (event.node.req.method === 'PUT') {
+  if (event.node.req.method === 'GET') {
+    try {
+      const task = await Task.findById(id);
+
+      if (!task) {
+        throw createError({
+          statusCode: 404,
+          statusMessage: 'Task not found',
+        });
+      }
+
+      return {
+        message: 'Task retrieved successfully',
+        body: task,
+      };
+    } catch (error) {
+      console.error('Error retrieving task:', error);
+      return sendError(
+        event,
+        createError({
+          statusCode: 500,
+          statusMessage: 'An error occurred while retrieving the task',
+          data: error.message,
+        })
+      );
+    }
+  } else if (event.node.req.method === 'PUT') {
     try {
       const form = formidable({ multiples: false });
 
@@ -79,6 +105,15 @@ export default defineEventHandler(async (event) => {
         }
       }
 
+      // Parse infopixels field
+      let infopixels = [];
+      if (fields.infopixels) {
+        infopixels = JSON.parse(fields.infopixels);
+      }
+
+      // Log fields after adjustment
+      console.log('Fields after adjustment:', fields);
+
       // Update the task
       const updateData = {
         name: fields.name,
@@ -86,6 +121,7 @@ export default defineEventHandler(async (event) => {
         level: fields.level,
         chapter: fields.chapter,
         taskType: fields.taskType,
+        infopixels: infopixels,
       };
       if (imagePath) {
         updateData.image = imagePath;

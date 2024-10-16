@@ -45,7 +45,10 @@
                 <img :src="`${task.image}`" width="50" alt="Book cover" />
               </td>
               <td>
-                <button class="btn btn-info btn-sm mr-2" @click="openEditModal(task)">Edit</button>
+                <!-- openEditModal(task) -->
+                <Nuxt-link class="btn btn-info btn-sm mr-2" :to="`/tasks/${task._id}`"
+                  >Edit</Nuxt-link
+                >
                 <button class="btn btn-error btn-sm" @click="confirmDelete(task)">Delete</button>
               </td>
             </tr>
@@ -67,101 +70,6 @@
       </div>
     </div>
 
-    <!-- Edit Task Modal -->
-    <dialog id="edit_modal" class="modal" ref="editModal">
-      <div class="modal-box">
-        <h3 class="text-lg font-bold">Edit Task</h3>
-        <form @submit.prevent="updateTask" enctype="multipart/form-data">
-          <!-- name -->
-          <label class="form-control w-full max-w-xs mb-4">
-            <div class="label">
-              <span class="label-text">Task Name</span>
-            </div>
-            <input
-              placeholder="Task name"
-              class="input input-bordered w-full max-w-xs"
-              type="text"
-              v-model="editForm.name"
-              required
-            />
-          </label>
-
-          <!-- description -->
-          <label class="form-control mb-4">
-            <div class="label">
-              <span class="label-text">Task Description</span>
-            </div>
-            <textarea
-              class="textarea textarea-bordered h-24"
-              placeholder="Book description"
-              v-model="editForm.description"
-            ></textarea>
-          </label>
-
-          <!-- level -->
-          <label class="form-control w-full max-w-xs mb-4">
-            <div class="label">
-              <span class="label-text">Task Level</span>
-            </div>
-            <input
-              placeholder="Book level"
-              class="input input-bordered w-full max-w-xs"
-              type="text"
-              v-model="editForm.level"
-              required
-            />
-          </label>
-
-          <!-- chapter -->
-          <label class="form-control w-full max-w-xs mb-4">
-            <div class="label">
-              <span class="label-text">Select chapter</span>
-            </div>
-            <select class="select select-bordered" v-model="editForm.chapter">
-              <option disabled value="">Select a chapter</option>
-              <option v-for="chapter in chapters" :key="chapter._id" :value="chapter._id">
-                {{ chapter.name }}
-              </option>
-            </select>
-          </label>
-
-          <!-- task type -->
-          <label class="form-control w-full max-w-xs mb-4">
-            <div class="label">
-              <span class="label-text">Select task type</span>
-            </div>
-            <select class="select select-bordered" v-model="editForm.taskType">
-              <option disabled value="">Select a chapter</option>
-              <option v-for="task in taskTypes" :key="task._id" :value="task._id">
-                {{ task.name }}
-              </option>
-            </select>
-          </label>
-
-          <!-- image -->
-          <label class="form-control w-full max-w-xs mb-4">
-            <div class="label">
-              <span class="label-text">Task Image</span>
-            </div>
-            <input
-              type="file"
-              name="image"
-              @change="handleEditFileUpload"
-              accept="image/*"
-              class="file-input file-input-bordered w-full max-w-xs"
-            />
-          </label>
-
-          <div class="flex justify-between mt-8">
-            <button type="submit" class="btn btn-success">Update Task</button>
-            <button type="button" class="btn btn-warning ml-2" @click="closeEditModal">
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </dialog>
-
     <!-- Delete Confirmation Modal -->
     <dialog id="delete_confirm_modal" class="modal" ref="deleteConfirmModal">
       <div class="modal-box">
@@ -181,35 +89,13 @@ import { useAuthStore } from '~/stores/auth/AuthStore';
 
 const AuthStore = useAuthStore();
 
-// const form = ref({
-//   name: '',
-//   description: '',
-//   level: '',
-//   chapter: '',
-//   taskType: '',
-// });
-
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-// const selectedFile = ref(null);
-// const modal = ref(null);
 const tasks = ref([]);
 const chapters = ref([]);
 const taskTypes = ref([]);
-// const infopixelsToAdd = ref([]);
 const infopixels = ref([]);
-
-const editForm = ref({
-  _id: '',
-  name: '',
-  description: '',
-  level: '',
-  chapter: '',
-  taskType: '',
-});
-const editModal = ref(null);
-const editSelectedFile = ref(null);
 
 const deleteConfirmModal = ref(null);
 const taskToDelete = ref(null);
@@ -253,74 +139,6 @@ const prevPage = () => {
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
-  }
-};
-
-const openEditModal = (task) => {
-  console.log('Editing chapter:', task);
-
-  editForm.value = {
-    ...task,
-    chapter: task.chapter._id,
-    taskType: task.taskType._id,
-  };
-  editModal.value.showModal();
-};
-
-const closeEditModal = () => {
-  editModal.value.close();
-};
-
-const handleEditFileUpload = (event) => {
-  editSelectedFile.value = event.target.files[0];
-};
-
-const updateTask = async () => {
-  if (!editForm.value.name || !editForm.value.level) {
-    useToastify('Please fill in all required fields.', {
-      type: 'error',
-      autoClose: 3000,
-      position: ToastifyOption.POSITION.TOP_RIGHT,
-    });
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append('name', editForm.value.name);
-  formData.append('description', editForm.value.description);
-  formData.append('level', editForm.value.level);
-  formData.append('chapter', editForm.value.chapter);
-  formData.append('taskType', editForm.value.taskType);
-
-  if (editSelectedFile.value) {
-    formData.append('image', editSelectedFile.value);
-  }
-
-  try {
-    const { message } = await $fetch(`/api/task/${editForm.value._id}`, {
-      method: 'PUT',
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${AuthStore.user.token}`,
-      },
-    });
-
-    useToastify(message, {
-      type: 'success',
-      autoClose: 3000,
-      position: ToastifyOption.POSITION.TOP_RIGHT,
-    });
-
-    fetchTasks();
-
-    closeEditModal();
-  } catch (error) {
-    useToastify('An error occurred while updating the book', {
-      type: 'error',
-      autoClose: 3000,
-      position: ToastifyOption.POSITION.TOP_RIGHT,
-    });
-    console.error(error);
   }
 };
 
