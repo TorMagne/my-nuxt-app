@@ -27,9 +27,9 @@
 
     <div class="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content flex flex-col items-center justify-center">
+      <div class="drawer-content flex flex-col">
         <!-- Page content here -->
-        <main class="container mx-auto px-4 lg:px-20 h-[calc(100vh-64px)]">
+        <main class="container mx-auto px-4 lg:px-20 md:py-10">
           <slot />
         </main>
       </div>
