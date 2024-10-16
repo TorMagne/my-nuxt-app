@@ -93,7 +93,10 @@
               <td class="text-black">{{ chapter.name }}</td>
               <td class="text-black">{{ chapter.description }}</td>
               <td>
-                <button class="btn btn-info btn-sm mr-2" @click="openEditModal(chapter)">
+                <button
+                  class="btn btn-info btn-sm mr-2 mb-4 md:mb-0"
+                  @click="openEditModal(chapter)"
+                >
                   Edit
                 </button>
                 <button class="btn btn-error btn-sm" @click="confirmDelete(chapter)">Delete</button>

@@ -77,7 +77,9 @@
               <td class="text-black">{{ task.name }}</td>
               <td class="text-black">{{ task.description }}</td>
               <td>
-                <button class="btn btn-info btn-sm mr-2" @click="openEditModal(task)">Edit</button>
+                <button class="btn btn-info btn-sm mr-2 mb-4 md:mb-0" @click="openEditModal(task)">
+                  Edit
+                </button>
                 <button class="btn btn-error btn-sm" @click="confirmDelete(task)">Delete</button>
               </td>
             </tr>

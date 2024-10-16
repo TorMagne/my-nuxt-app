@@ -143,7 +143,10 @@
                 <img :src="`${infopixel.image}`" width="50" alt="Book cover" />
               </td>
               <td>
-                <button class="btn btn-info btn-sm mr-2" @click="openEditModal(infopixel)">
+                <button
+                  class="btn btn-info btn-sm mr-2 mb-4 md:mb-0"
+                  @click="openEditModal(infopixel)"
+                >
                   Edit
                 </button>
                 <button class="btn btn-error btn-sm" @click="confirmDelete(infopixel)">

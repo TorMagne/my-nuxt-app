@@ -46,7 +46,7 @@
               </td>
               <td>
                 <!-- openEditModal(task) -->
-                <Nuxt-link class="btn btn-info btn-sm mr-2" :to="`/tasks/${task._id}`"
+                <Nuxt-link class="btn btn-info btn-sm mr-2 mb-4 md:mb-0" :to="`/tasks/${task._id}`"
                   >Edit</Nuxt-link
                 >
                 <button class="btn btn-error btn-sm" @click="confirmDelete(task)">Delete</button>
