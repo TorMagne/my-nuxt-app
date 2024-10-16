@@ -175,7 +175,7 @@
                 />
               </svg>
 
-              Info pixel</NuxtLink
+              Info pixels</NuxtLink
             >
           </li>
           <button class="btn btn-secondary mt-4" @click="AuthStore.logout">Logout</button>
